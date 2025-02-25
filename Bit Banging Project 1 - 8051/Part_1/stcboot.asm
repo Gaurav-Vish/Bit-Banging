@@ -475,40 +475,80 @@ _binary_count:
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'cylon'
 ;------------------------------------------------------------
-;direction     Allocated to registers 
-;pos           Allocated to registers 
-;pos           Allocated to registers 
+;pos           Allocated to registers r7 
 ;------------------------------------------------------------
 ;	.\stcboot.c:43: void cylon(void) {
 ;	-----------------------------------------
 ;	 function cylon
 ;	-----------------------------------------
 _cylon:
-;	.\stcboot.c:48: P1 = ~pos;  // Invert output to turn LEDs on
-	mov	_P1,#0xfe
-;	.\stcboot.c:49: delay(5000);
+;	.\stcboot.c:44: unsigned char pos = 1;
+	mov	r7,#0x01
+;	.\stcboot.c:45: while (1) {
+00104$:
+;	.\stcboot.c:46: P1 = ~pos;  // Invert output to turn LEDs on
+	mov	a,r7
+	cpl	a
+	mov	_P1,a
+;	.\stcboot.c:47: delay(5000);
 	mov	dptr,#0x1388
-;	.\stcboot.c:60: break;
-;	.\stcboot.c:64: }
-	ljmp	_delay
+	push	ar7
+	lcall	_delay
+	pop	ar7
+;	.\stcboot.c:48: pos <<= 1;
+	mov	a,r7
+	add	a,r7
+;	.\stcboot.c:49: if (pos == 0) pos = 1;  // Reset to start position
+	mov	r7,a
+	jnz	00104$
+	mov	r7,#0x01
+;	.\stcboot.c:51: }
+	sjmp	00104$
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'dual_cylon'
 ;------------------------------------------------------------
-;pos1          Allocated to registers 
-;pos2          Allocated to registers 
+;pos1          Allocated to registers r7 
+;pos2          Allocated to registers r6 
 ;------------------------------------------------------------
-;	.\stcboot.c:67: void dual_cylon(void) {
+;	.\stcboot.c:54: void dual_cylon(void) {
 ;	-----------------------------------------
 ;	 function dual_cylon
 ;	-----------------------------------------
 _dual_cylon:
-;	.\stcboot.c:70: P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
-	mov	_P1,#0x7e
-;	.\stcboot.c:71: delay(5000);
+;	.\stcboot.c:55: unsigned char pos1 = 1, pos2 = 0x80;
+	mov	r7,#0x01
+	mov	r6,#0x80
+;	.\stcboot.c:56: while (1) {
+00104$:
+;	.\stcboot.c:57: P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
+	mov	a,r6
+	orl	a,r7
+	cpl	a
+	mov	_P1,a
+;	.\stcboot.c:58: delay(5000);
 	mov	dptr,#0x1388
-;	.\stcboot.c:76: pos2 = 0x80;
-;	.\stcboot.c:79: }
-	ljmp	_delay
+	push	ar7
+	push	ar6
+	lcall	_delay
+	pop	ar6
+	pop	ar7
+;	.\stcboot.c:59: pos1 <<= 1;
+	mov	a,r7
+	add	a,r7
+	mov	r7,a
+;	.\stcboot.c:60: pos2 >>= 1;
+	mov	a,r6
+	clr	c
+	rrc	a
+	mov	r6,a
+;	.\stcboot.c:61: if (pos1 == 0x80) {  // Reset condition
+	cjne	r7,#0x80,00104$
+;	.\stcboot.c:62: pos1 = 1;
+	mov	r7,#0x01
+;	.\stcboot.c:63: pos2 = 0x80;
+	mov	r6,#0x80
+;	.\stcboot.c:66: }
+	sjmp	00104$
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'display_number'
 ;------------------------------------------------------------
@@ -518,15 +558,15 @@ _dual_cylon:
 ;hundreds      Allocated to registers r2 
 ;thousands     Allocated to registers r6 
 ;------------------------------------------------------------
-;	.\stcboot.c:82: void display_number(void) {
+;	.\stcboot.c:69: void display_number(void) {
 ;	-----------------------------------------
 ;	 function display_number
 ;	-----------------------------------------
 _display_number:
-;	.\stcboot.c:83: unsigned int temp = number;
+;	.\stcboot.c:70: unsigned int temp = number;
 	mov	r6,_number
 	mov	r7,(_number + 1)
-;	.\stcboot.c:85: unsigned char ones = temp % 10;
+;	.\stcboot.c:72: unsigned char ones = temp % 10;
 	mov	__moduint_PARM_2,#0x0a
 	mov	(__moduint_PARM_2 + 1),#0x00
 	mov	dpl, r6
@@ -537,10 +577,10 @@ _display_number:
 	mov	r4, dpl
 	pop	ar6
 	pop	ar7
-;	.\stcboot.c:86: temp /= 10;
+;	.\stcboot.c:73: temp /= 10;
 	mov	__divuint_PARM_2,#0x0a
 	mov	(__divuint_PARM_2 + 1),#0x00
-;	.\stcboot.c:87: unsigned char tens = temp % 10;
+;	.\stcboot.c:74: unsigned char tens = temp % 10;
 	mov	dpl, r6
 	mov	dph, r7
 	push	ar4
@@ -560,10 +600,10 @@ _display_number:
 	pop	ar4
 	pop	ar6
 	pop	ar7
-;	.\stcboot.c:88: temp /= 10;
+;	.\stcboot.c:75: temp /= 10;
 	mov	__divuint_PARM_2,#0x0a
 	mov	(__divuint_PARM_2 + 1),#0x00
-;	.\stcboot.c:89: unsigned char hundreds = temp % 10;
+;	.\stcboot.c:76: unsigned char hundreds = temp % 10;
 	mov	dpl, r6
 	mov	dph, r7
 	push	ar4
@@ -587,10 +627,10 @@ _display_number:
 	pop	ar4
 	pop	ar6
 	pop	ar7
-;	.\stcboot.c:90: temp /= 10;
+;	.\stcboot.c:77: temp /= 10;
 	mov	__divuint_PARM_2,#0x0a
 	mov	(__divuint_PARM_2 + 1),#0x00
-;	.\stcboot.c:91: unsigned char thousands = temp % 10;
+;	.\stcboot.c:78: unsigned char thousands = temp % 10;
 	mov	dpl, r6
 	mov	dph, r7
 	push	ar4
@@ -601,88 +641,88 @@ _display_number:
 	mov	b,#0x0a
 	mov	a,r6
 	div	ab
-;	.\stcboot.c:93: P0 = seg_table[thousands];
+;	.\stcboot.c:80: P0 = seg_table[thousands];
 	mov	a,b
 	add	a, #_seg_table
 	mov	r1,a
 	mov	_P0,@r1
-;	.\stcboot.c:94: P2_0 = 0;
+;	.\stcboot.c:81: P2_0 = 0;
 ;	assignBit
 	clr	_P2_0
-;	.\stcboot.c:95: delay(500);
+;	.\stcboot.c:82: delay(500);
 	mov	dptr,#0x01f4
 	lcall	_delay
 	pop	ar2
-;	.\stcboot.c:96: P2_0 = 1;
+;	.\stcboot.c:83: P2_0 = 1;
 ;	assignBit
 	setb	_P2_0
-;	.\stcboot.c:98: P0 = seg_table[hundreds];
+;	.\stcboot.c:85: P0 = seg_table[hundreds];
 	mov	a,r2
 	add	a, #_seg_table
 	mov	r1,a
 	mov	_P0,@r1
-;	.\stcboot.c:99: P2_1 = 0;
+;	.\stcboot.c:86: P2_1 = 0;
 ;	assignBit
 	clr	_P2_1
-;	.\stcboot.c:100: delay(500);
+;	.\stcboot.c:87: delay(500);
 	mov	dptr,#0x01f4
 	lcall	_delay
 	pop	ar3
-;	.\stcboot.c:101: P2_1 = 1;
+;	.\stcboot.c:88: P2_1 = 1;
 ;	assignBit
 	setb	_P2_1
-;	.\stcboot.c:103: P0 = seg_table[tens];
+;	.\stcboot.c:90: P0 = seg_table[tens];
 	mov	a,r3
 	add	a, #_seg_table
 	mov	r1,a
 	mov	_P0,@r1
-;	.\stcboot.c:104: P2_2 = 0;
+;	.\stcboot.c:91: P2_2 = 0;
 ;	assignBit
 	clr	_P2_2
-;	.\stcboot.c:105: delay(500);
+;	.\stcboot.c:92: delay(500);
 	mov	dptr,#0x01f4
 	lcall	_delay
 	pop	ar4
-;	.\stcboot.c:106: P2_2 = 1;
+;	.\stcboot.c:93: P2_2 = 1;
 ;	assignBit
 	setb	_P2_2
-;	.\stcboot.c:108: P0 = seg_table[ones];
+;	.\stcboot.c:95: P0 = seg_table[ones];
 	mov	a,r4
 	add	a, #_seg_table
 	mov	r1,a
 	mov	_P0,@r1
-;	.\stcboot.c:109: P2_3 = 0;
+;	.\stcboot.c:96: P2_3 = 0;
 ;	assignBit
 	clr	_P2_3
-;	.\stcboot.c:110: delay(500);
+;	.\stcboot.c:97: delay(500);
 	mov	dptr,#0x01f4
 	lcall	_delay
-;	.\stcboot.c:111: P2_3 = 1;
+;	.\stcboot.c:98: P2_3 = 1;
 ;	assignBit
 	setb	_P2_3
-;	.\stcboot.c:112: }
+;	.\stcboot.c:99: }
 	ret
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'number_clicker'
 ;------------------------------------------------------------
-;	.\stcboot.c:116: void number_clicker(void) {
+;	.\stcboot.c:103: void number_clicker(void) {
 ;	-----------------------------------------
 ;	 function number_clicker
 ;	-----------------------------------------
 _number_clicker:
-;	.\stcboot.c:118: if ((P3 & 0x08) == 0) { // Button Pressed
+;	.\stcboot.c:105: if ((P3 & 0x08) == 0) { // Button Pressed
 	mov	a,_P3
 	jb	acc.3,00104$
-;	.\stcboot.c:119: delay(5000);
+;	.\stcboot.c:106: delay(5000);
 	mov	dptr,#0x1388
 	lcall	_delay
-;	.\stcboot.c:120: number++;
+;	.\stcboot.c:107: number++;
 	inc	_number
 	clr	a
 	cjne	a,_number,00137$
 	inc	(_number + 1)
 00137$:
-;	.\stcboot.c:121: if (number > 9999) number = 0; // Roll over to 0
+;	.\stcboot.c:108: if (number > 9999) number = 0; // Roll over to 0
 	clr	c
 	mov	a,#0x0f
 	subb	a,_number
@@ -693,14 +733,14 @@ _number_clicker:
 	mov	_number,a
 	mov	(_number + 1),a
 00104$:
-;	.\stcboot.c:127: if ((P3 & 0x12) == 0) { // Button Pressed
+;	.\stcboot.c:114: if ((P3 & 0x12) == 0) { // Button Pressed
 	mov	a,_P3
 	anl	a,#0x12
 	jnz	00109$
-;	.\stcboot.c:128: delay(5000);
+;	.\stcboot.c:115: delay(5000);
 	mov	dptr,#0x1388
 	lcall	_delay
-;	.\stcboot.c:129: if (number == 0) number = 9999; // Roll over to 9999
+;	.\stcboot.c:116: if (number == 0) number = 9999; // Roll over to 9999
 	mov	a,_number
 	orl	a,(_number + 1)
 	jnz	00106$
@@ -708,29 +748,29 @@ _number_clicker:
 	mov	(_number + 1),#0x27
 	sjmp	00109$
 00106$:
-;	.\stcboot.c:130: else number--;
+;	.\stcboot.c:117: else number--;
 	dec	_number
 	mov	a,#0xff
 	cjne	a,_number,00142$
 	dec	(_number + 1)
 00142$:
 00109$:
-;	.\stcboot.c:134: display_number();
-;	.\stcboot.c:136: }
+;	.\stcboot.c:121: display_number();
+;	.\stcboot.c:123: }
 	ljmp	_display_number
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'main'
 ;------------------------------------------------------------
-;	.\stcboot.c:138: void main(void) {
+;	.\stcboot.c:125: void main(void) {
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	.\stcboot.c:139: while (1) {
+;	.\stcboot.c:126: while (1) {
 00102$:
-;	.\stcboot.c:143: number_clicker();
-	lcall	_number_clicker
-;	.\stcboot.c:145: }
+;	.\stcboot.c:129: dual_cylon();
+	lcall	_dual_cylon
+;	.\stcboot.c:132: }
 	sjmp	00102$
 	.area CSEG    (CODE)
 	.area CONST   (CODE)

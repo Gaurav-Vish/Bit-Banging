@@ -80,9 +80,9 @@ C:   000000CC  s_GSFINAL
 C:   000000CF  s_CSEG                          
 C:   000000E0  l_SSEG                          
 C:   00000100  l_IRAM                          
-C:   000001F4  l_CSEG                          
-C:   000002C3  s_CONST                         
-C:   000002C7  s_XINIT                         
+C:   00000222  l_CSEG                          
+C:   000002F1  s_CONST                         
+C:   000002F5  s_XINIT                         
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 3.
 Hexadecimal  [32-Bits]
@@ -331,31 +331,31 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-CSEG                                000000CF    000001F4 =         500. bytes (REL,CON,CODE)
+CSEG                                000000CF    00000222 =         546. bytes (REL,CON,CODE)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
 C:   000000CF  _delay                             stcboot
 C:   000000E1  _binary_count                      stcboot
 C:   00000104  _cylon                             stcboot
-C:   0000010D  _dual_cylon                        stcboot
-C:   00000116  _display_number                    stcboot
-C:   000001FB  _number_clicker                    stcboot
-C:   00000244  _main                              stcboot
-C:   00000249  __divuint                          _divuint
-C:   00000272  __moduint                          _moduint
-C:   000002BF  ___sdcc_external_startup           _startup
+C:   0000011D  _dual_cylon                        stcboot
+C:   00000144  _display_number                    stcboot
+C:   00000229  _number_clicker                    stcboot
+C:   00000272  _main                              stcboot
+C:   00000277  __divuint                          _divuint
+C:   000002A0  __moduint                          _moduint
+C:   000002ED  ___sdcc_external_startup           _startup
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 17.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-CONST                               000002C3    00000004 =           4. bytes (REL,CON,CODE)
+CONST                               000002F1    00000004 =           4. bytes (REL,CON,CODE)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-C:   000002C3  _period                            stcboot
+C:   000002F1  _period                            stcboot
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 18.
 

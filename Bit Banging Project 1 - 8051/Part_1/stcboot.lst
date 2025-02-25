@@ -395,7 +395,7 @@
                                     395 	.area HOME    (CODE)
                                     396 	.area HOME    (CODE)
       000049                        397 __sdcc_program_startup:
-      000049 02r01r75         [24]  398 	ljmp	_main
+      000049 02r01rA3         [24]  398 	ljmp	_main
                                     399 ;	return from main will return to caller
                                     400 ;--------------------------------------------------------
                                     401 ; code
@@ -475,268 +475,308 @@
                                     475 ;------------------------------------------------------------
                                     476 ;Allocation info for local variables in function 'cylon'
                                     477 ;------------------------------------------------------------
-                                    478 ;direction     Allocated to registers 
-                                    479 ;pos           Allocated to registers 
-                                    480 ;pos           Allocated to registers 
-                                    481 ;------------------------------------------------------------
-                                    482 ;	.\stcboot.c:43: void cylon(void) {
+                                    478 ;pos           Allocated to registers r7 
+                                    479 ;------------------------------------------------------------
+                                    480 ;	.\stcboot.c:43: void cylon(void) {
+                                    481 ;	-----------------------------------------
+                                    482 ;	 function cylon
                                     483 ;	-----------------------------------------
-                                    484 ;	 function cylon
-                                    485 ;	-----------------------------------------
-      000035                        486 _cylon:
-                                    487 ;	.\stcboot.c:48: P1 = ~pos;  // Invert output to turn LEDs on
-      000035 75 90 FE         [24]  488 	mov	_P1,#0xfe
-                                    489 ;	.\stcboot.c:49: delay(5000);
-      000038 90 13 88         [24]  490 	mov	dptr,#0x1388
-                                    491 ;	.\stcboot.c:60: break;
-                                    492 ;	.\stcboot.c:64: }
-      00003B 02r00r00         [24]  493 	ljmp	_delay
-                                    494 ;------------------------------------------------------------
-                                    495 ;Allocation info for local variables in function 'dual_cylon'
-                                    496 ;------------------------------------------------------------
-                                    497 ;pos1          Allocated to registers 
-                                    498 ;pos2          Allocated to registers 
-                                    499 ;------------------------------------------------------------
-                                    500 ;	.\stcboot.c:67: void dual_cylon(void) {
-                                    501 ;	-----------------------------------------
-                                    502 ;	 function dual_cylon
-                                    503 ;	-----------------------------------------
-      00003E                        504 _dual_cylon:
-                                    505 ;	.\stcboot.c:70: P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
-      00003E 75 90 7E         [24]  506 	mov	_P1,#0x7e
-                                    507 ;	.\stcboot.c:71: delay(5000);
-      000041 90 13 88         [24]  508 	mov	dptr,#0x1388
-                                    509 ;	.\stcboot.c:76: pos2 = 0x80;
-                                    510 ;	.\stcboot.c:79: }
-      000044 02r00r00         [24]  511 	ljmp	_delay
+      000035                        484 _cylon:
+                                    485 ;	.\stcboot.c:44: unsigned char pos = 1;
+      000035 7F 01            [12]  486 	mov	r7,#0x01
+                                    487 ;	.\stcboot.c:45: while (1) {
+      000037                        488 00104$:
+                                    489 ;	.\stcboot.c:46: P1 = ~pos;  // Invert output to turn LEDs on
+      000037 EF               [12]  490 	mov	a,r7
+      000038 F4               [12]  491 	cpl	a
+      000039 F5 90            [12]  492 	mov	_P1,a
+                                    493 ;	.\stcboot.c:47: delay(5000);
+      00003B 90 13 88         [24]  494 	mov	dptr,#0x1388
+      00003E C0 07            [24]  495 	push	ar7
+      000040 12r00r00         [24]  496 	lcall	_delay
+      000043 D0 07            [24]  497 	pop	ar7
+                                    498 ;	.\stcboot.c:48: pos <<= 1;
+      000045 EF               [12]  499 	mov	a,r7
+      000046 2F               [12]  500 	add	a,r7
+                                    501 ;	.\stcboot.c:49: if (pos == 0) pos = 1;  // Reset to start position
+      000047 FF               [12]  502 	mov	r7,a
+      000048 70 ED            [24]  503 	jnz	00104$
+      00004A 7F 01            [12]  504 	mov	r7,#0x01
+                                    505 ;	.\stcboot.c:51: }
+      00004C 80 E9            [24]  506 	sjmp	00104$
+                                    507 ;------------------------------------------------------------
+                                    508 ;Allocation info for local variables in function 'dual_cylon'
+                                    509 ;------------------------------------------------------------
+                                    510 ;pos1          Allocated to registers r7 
+                                    511 ;pos2          Allocated to registers r6 
                                     512 ;------------------------------------------------------------
-                                    513 ;Allocation info for local variables in function 'display_number'
-                                    514 ;------------------------------------------------------------
-                                    515 ;temp          Allocated to registers r6 r7 
-                                    516 ;ones          Allocated to registers r4 
-                                    517 ;tens          Allocated to registers r3 
-                                    518 ;hundreds      Allocated to registers r2 
-                                    519 ;thousands     Allocated to registers r6 
-                                    520 ;------------------------------------------------------------
-                                    521 ;	.\stcboot.c:82: void display_number(void) {
-                                    522 ;	-----------------------------------------
-                                    523 ;	 function display_number
-                                    524 ;	-----------------------------------------
-      000047                        525 _display_number:
-                                    526 ;	.\stcboot.c:83: unsigned int temp = number;
-      000047 AE*00            [24]  527 	mov	r6,_number
-      000049 AF*01            [24]  528 	mov	r7,(_number + 1)
-                                    529 ;	.\stcboot.c:85: unsigned char ones = temp % 10;
-      00004B 75*00 0A         [24]  530 	mov	__moduint_PARM_2,#0x0a
-      00004E 75*01 00         [24]  531 	mov	(__moduint_PARM_2 + 1),#0x00
-      000051 8E 82            [24]  532 	mov	dpl, r6
-      000053 8F 83            [24]  533 	mov	dph, r7
-      000055 C0 07            [24]  534 	push	ar7
-      000057 C0 06            [24]  535 	push	ar6
-      000059 12r00r00         [24]  536 	lcall	__moduint
-      00005C AC 82            [24]  537 	mov	r4, dpl
-      00005E D0 06            [24]  538 	pop	ar6
-      000060 D0 07            [24]  539 	pop	ar7
-                                    540 ;	.\stcboot.c:86: temp /= 10;
-      000062 75*00 0A         [24]  541 	mov	__divuint_PARM_2,#0x0a
-      000065 75*01 00         [24]  542 	mov	(__divuint_PARM_2 + 1),#0x00
-                                    543 ;	.\stcboot.c:87: unsigned char tens = temp % 10;
-      000068 8E 82            [24]  544 	mov	dpl, r6
-      00006A 8F 83            [24]  545 	mov	dph, r7
-      00006C C0 04            [24]  546 	push	ar4
-      00006E 12r00r00         [24]  547 	lcall	__divuint
-      000071 AE 82            [24]  548 	mov	r6, dpl
-      000073 AF 83            [24]  549 	mov	r7, dph
-      000075 D0 04            [24]  550 	pop	ar4
-      000077 75*00 0A         [24]  551 	mov	__moduint_PARM_2,#0x0a
-      00007A 75*01 00         [24]  552 	mov	(__moduint_PARM_2 + 1),#0x00
-      00007D 8E 82            [24]  553 	mov	dpl, r6
-      00007F 8F 83            [24]  554 	mov	dph, r7
-      000081 C0 07            [24]  555 	push	ar7
-      000083 C0 06            [24]  556 	push	ar6
-      000085 C0 04            [24]  557 	push	ar4
-      000087 12r00r00         [24]  558 	lcall	__moduint
-      00008A AB 82            [24]  559 	mov	r3, dpl
-      00008C D0 04            [24]  560 	pop	ar4
-      00008E D0 06            [24]  561 	pop	ar6
-      000090 D0 07            [24]  562 	pop	ar7
-                                    563 ;	.\stcboot.c:88: temp /= 10;
-      000092 75*00 0A         [24]  564 	mov	__divuint_PARM_2,#0x0a
-      000095 75*01 00         [24]  565 	mov	(__divuint_PARM_2 + 1),#0x00
-                                    566 ;	.\stcboot.c:89: unsigned char hundreds = temp % 10;
-      000098 8E 82            [24]  567 	mov	dpl, r6
-      00009A 8F 83            [24]  568 	mov	dph, r7
-      00009C C0 04            [24]  569 	push	ar4
-      00009E C0 03            [24]  570 	push	ar3
-      0000A0 12r00r00         [24]  571 	lcall	__divuint
-      0000A3 AE 82            [24]  572 	mov	r6, dpl
-      0000A5 AF 83            [24]  573 	mov	r7, dph
-      0000A7 D0 03            [24]  574 	pop	ar3
-      0000A9 D0 04            [24]  575 	pop	ar4
-      0000AB 75*00 0A         [24]  576 	mov	__moduint_PARM_2,#0x0a
-      0000AE 75*01 00         [24]  577 	mov	(__moduint_PARM_2 + 1),#0x00
-      0000B1 8E 82            [24]  578 	mov	dpl, r6
-      0000B3 8F 83            [24]  579 	mov	dph, r7
-      0000B5 C0 07            [24]  580 	push	ar7
-      0000B7 C0 06            [24]  581 	push	ar6
-      0000B9 C0 04            [24]  582 	push	ar4
-      0000BB C0 03            [24]  583 	push	ar3
-      0000BD 12r00r00         [24]  584 	lcall	__moduint
-      0000C0 AA 82            [24]  585 	mov	r2, dpl
-      0000C2 D0 03            [24]  586 	pop	ar3
-      0000C4 D0 04            [24]  587 	pop	ar4
-      0000C6 D0 06            [24]  588 	pop	ar6
-      0000C8 D0 07            [24]  589 	pop	ar7
-                                    590 ;	.\stcboot.c:90: temp /= 10;
-      0000CA 75*00 0A         [24]  591 	mov	__divuint_PARM_2,#0x0a
-      0000CD 75*01 00         [24]  592 	mov	(__divuint_PARM_2 + 1),#0x00
-                                    593 ;	.\stcboot.c:91: unsigned char thousands = temp % 10;
-      0000D0 8E 82            [24]  594 	mov	dpl, r6
-      0000D2 8F 83            [24]  595 	mov	dph, r7
-      0000D4 C0 04            [24]  596 	push	ar4
-      0000D6 C0 03            [24]  597 	push	ar3
-      0000D8 C0 02            [24]  598 	push	ar2
-      0000DA 12r00r00         [24]  599 	lcall	__divuint
-      0000DD AE 82            [24]  600 	mov	r6, dpl
-      0000DF 75 F0 0A         [24]  601 	mov	b,#0x0a
-      0000E2 EE               [12]  602 	mov	a,r6
-      0000E3 84               [48]  603 	div	ab
-                                    604 ;	.\stcboot.c:93: P0 = seg_table[thousands];
-      0000E4 E5 F0            [12]  605 	mov	a,b
-      0000E6 24r0C            [12]  606 	add	a, #_seg_table
-      0000E8 F9               [12]  607 	mov	r1,a
-      0000E9 87 80            [24]  608 	mov	_P0,@r1
-                                    609 ;	.\stcboot.c:94: P2_0 = 0;
-                                    610 ;	assignBit
-      0000EB C2 A0            [12]  611 	clr	_P2_0
-                                    612 ;	.\stcboot.c:95: delay(500);
-      0000ED 90 01 F4         [24]  613 	mov	dptr,#0x01f4
-      0000F0 12r00r00         [24]  614 	lcall	_delay
-      0000F3 D0 02            [24]  615 	pop	ar2
-                                    616 ;	.\stcboot.c:96: P2_0 = 1;
-                                    617 ;	assignBit
-      0000F5 D2 A0            [12]  618 	setb	_P2_0
-                                    619 ;	.\stcboot.c:98: P0 = seg_table[hundreds];
-      0000F7 EA               [12]  620 	mov	a,r2
-      0000F8 24r0C            [12]  621 	add	a, #_seg_table
-      0000FA F9               [12]  622 	mov	r1,a
-      0000FB 87 80            [24]  623 	mov	_P0,@r1
-                                    624 ;	.\stcboot.c:99: P2_1 = 0;
-                                    625 ;	assignBit
-      0000FD C2 A1            [12]  626 	clr	_P2_1
-                                    627 ;	.\stcboot.c:100: delay(500);
-      0000FF 90 01 F4         [24]  628 	mov	dptr,#0x01f4
-      000102 12r00r00         [24]  629 	lcall	_delay
-      000105 D0 03            [24]  630 	pop	ar3
-                                    631 ;	.\stcboot.c:101: P2_1 = 1;
-                                    632 ;	assignBit
-      000107 D2 A1            [12]  633 	setb	_P2_1
-                                    634 ;	.\stcboot.c:103: P0 = seg_table[tens];
-      000109 EB               [12]  635 	mov	a,r3
-      00010A 24r0C            [12]  636 	add	a, #_seg_table
-      00010C F9               [12]  637 	mov	r1,a
-      00010D 87 80            [24]  638 	mov	_P0,@r1
-                                    639 ;	.\stcboot.c:104: P2_2 = 0;
-                                    640 ;	assignBit
-      00010F C2 A2            [12]  641 	clr	_P2_2
-                                    642 ;	.\stcboot.c:105: delay(500);
-      000111 90 01 F4         [24]  643 	mov	dptr,#0x01f4
-      000114 12r00r00         [24]  644 	lcall	_delay
-      000117 D0 04            [24]  645 	pop	ar4
-                                    646 ;	.\stcboot.c:106: P2_2 = 1;
-                                    647 ;	assignBit
-      000119 D2 A2            [12]  648 	setb	_P2_2
-                                    649 ;	.\stcboot.c:108: P0 = seg_table[ones];
-      00011B EC               [12]  650 	mov	a,r4
-      00011C 24r0C            [12]  651 	add	a, #_seg_table
-      00011E F9               [12]  652 	mov	r1,a
-      00011F 87 80            [24]  653 	mov	_P0,@r1
-                                    654 ;	.\stcboot.c:109: P2_3 = 0;
-                                    655 ;	assignBit
-      000121 C2 A3            [12]  656 	clr	_P2_3
-                                    657 ;	.\stcboot.c:110: delay(500);
-      000123 90 01 F4         [24]  658 	mov	dptr,#0x01f4
-      000126 12r00r00         [24]  659 	lcall	_delay
-                                    660 ;	.\stcboot.c:111: P2_3 = 1;
-                                    661 ;	assignBit
-      000129 D2 A3            [12]  662 	setb	_P2_3
-                                    663 ;	.\stcboot.c:112: }
-      00012B 22               [24]  664 	ret
-                                    665 ;------------------------------------------------------------
-                                    666 ;Allocation info for local variables in function 'number_clicker'
-                                    667 ;------------------------------------------------------------
-                                    668 ;	.\stcboot.c:116: void number_clicker(void) {
-                                    669 ;	-----------------------------------------
-                                    670 ;	 function number_clicker
-                                    671 ;	-----------------------------------------
-      00012C                        672 _number_clicker:
-                                    673 ;	.\stcboot.c:118: if ((P3 & 0x08) == 0) { // Button Pressed
-      00012C E5 B0            [12]  674 	mov	a,_P3
-      00012E 20 E3 1E         [24]  675 	jb	acc.3,00104$
-                                    676 ;	.\stcboot.c:119: delay(5000);
-      000131 90 13 88         [24]  677 	mov	dptr,#0x1388
-      000134 12r00r00         [24]  678 	lcall	_delay
-                                    679 ;	.\stcboot.c:120: number++;
-      000137 05*00            [12]  680 	inc	_number
-      000139 E4               [12]  681 	clr	a
-      00013A B5*00 02         [24]  682 	cjne	a,_number,00137$
-      00013D 05*01            [12]  683 	inc	(_number + 1)
-      00013F                        684 00137$:
-                                    685 ;	.\stcboot.c:121: if (number > 9999) number = 0; // Roll over to 0
-      00013F C3               [12]  686 	clr	c
-      000140 74 0F            [12]  687 	mov	a,#0x0f
-      000142 95*00            [12]  688 	subb	a,_number
-      000144 74 27            [12]  689 	mov	a,#0x27
-      000146 95*01            [12]  690 	subb	a,(_number + 1)
-      000148 50 05            [24]  691 	jnc	00104$
-      00014A E4               [12]  692 	clr	a
-      00014B F5*00            [12]  693 	mov	_number,a
-      00014D F5*01            [12]  694 	mov	(_number + 1),a
-      00014F                        695 00104$:
-                                    696 ;	.\stcboot.c:127: if ((P3 & 0x12) == 0) { // Button Pressed
-      00014F E5 B0            [12]  697 	mov	a,_P3
-      000151 54 12            [12]  698 	anl	a,#0x12
-      000153 70 1D            [24]  699 	jnz	00109$
-                                    700 ;	.\stcboot.c:128: delay(5000);
-      000155 90 13 88         [24]  701 	mov	dptr,#0x1388
-      000158 12r00r00         [24]  702 	lcall	_delay
-                                    703 ;	.\stcboot.c:129: if (number == 0) number = 9999; // Roll over to 9999
-      00015B E5*00            [12]  704 	mov	a,_number
-      00015D 45*01            [12]  705 	orl	a,(_number + 1)
-      00015F 70 08            [24]  706 	jnz	00106$
-      000161 75*00 0F         [24]  707 	mov	_number,#0x0f
-      000164 75*01 27         [24]  708 	mov	(_number + 1),#0x27
-      000167 80 09            [24]  709 	sjmp	00109$
-      000169                        710 00106$:
-                                    711 ;	.\stcboot.c:130: else number--;
-      000169 15*00            [12]  712 	dec	_number
-      00016B 74 FF            [12]  713 	mov	a,#0xff
-      00016D B5*00 02         [24]  714 	cjne	a,_number,00142$
-      000170 15*01            [12]  715 	dec	(_number + 1)
-      000172                        716 00142$:
-      000172                        717 00109$:
-                                    718 ;	.\stcboot.c:134: display_number();
-                                    719 ;	.\stcboot.c:136: }
-      000172 02r00r47         [24]  720 	ljmp	_display_number
-                                    721 ;------------------------------------------------------------
-                                    722 ;Allocation info for local variables in function 'main'
-                                    723 ;------------------------------------------------------------
-                                    724 ;	.\stcboot.c:138: void main(void) {
-                                    725 ;	-----------------------------------------
-                                    726 ;	 function main
-                                    727 ;	-----------------------------------------
-      000175                        728 _main:
-                                    729 ;	.\stcboot.c:139: while (1) {
-      000175                        730 00102$:
-                                    731 ;	.\stcboot.c:143: number_clicker();
-      000175 12r01r2C         [24]  732 	lcall	_number_clicker
-                                    733 ;	.\stcboot.c:145: }
-      000178 80 FB            [24]  734 	sjmp	00102$
-                                    735 	.area CSEG    (CODE)
-                                    736 	.area CONST   (CODE)
-                                    737 	.area CONST   (CODE)
-      000000                        738 _period:
-      000000 E8 03 00 00            739 	.byte #0xe8, #0x03, #0x00, #0x00	; 1000
-                                    740 	.area CSEG    (CODE)
-                                    741 	.area XINIT   (CODE)
-                                    742 	.area CABS    (ABS,CODE)
+                                    513 ;	.\stcboot.c:54: void dual_cylon(void) {
+                                    514 ;	-----------------------------------------
+                                    515 ;	 function dual_cylon
+                                    516 ;	-----------------------------------------
+      00004E                        517 _dual_cylon:
+                                    518 ;	.\stcboot.c:55: unsigned char pos1 = 1, pos2 = 0x80;
+      00004E 7F 01            [12]  519 	mov	r7,#0x01
+      000050 7E 80            [12]  520 	mov	r6,#0x80
+                                    521 ;	.\stcboot.c:56: while (1) {
+      000052                        522 00104$:
+                                    523 ;	.\stcboot.c:57: P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
+      000052 EE               [12]  524 	mov	a,r6
+      000053 4F               [12]  525 	orl	a,r7
+      000054 F4               [12]  526 	cpl	a
+      000055 F5 90            [12]  527 	mov	_P1,a
+                                    528 ;	.\stcboot.c:58: delay(5000);
+      000057 90 13 88         [24]  529 	mov	dptr,#0x1388
+      00005A C0 07            [24]  530 	push	ar7
+      00005C C0 06            [24]  531 	push	ar6
+      00005E 12r00r00         [24]  532 	lcall	_delay
+      000061 D0 06            [24]  533 	pop	ar6
+      000063 D0 07            [24]  534 	pop	ar7
+                                    535 ;	.\stcboot.c:59: pos1 <<= 1;
+      000065 EF               [12]  536 	mov	a,r7
+      000066 2F               [12]  537 	add	a,r7
+      000067 FF               [12]  538 	mov	r7,a
+                                    539 ;	.\stcboot.c:60: pos2 >>= 1;
+      000068 EE               [12]  540 	mov	a,r6
+      000069 C3               [12]  541 	clr	c
+      00006A 13               [12]  542 	rrc	a
+      00006B FE               [12]  543 	mov	r6,a
+                                    544 ;	.\stcboot.c:61: if (pos1 == 0x80) {  // Reset condition
+      00006C BF 80 E3         [24]  545 	cjne	r7,#0x80,00104$
+                                    546 ;	.\stcboot.c:62: pos1 = 1;
+      00006F 7F 01            [12]  547 	mov	r7,#0x01
+                                    548 ;	.\stcboot.c:63: pos2 = 0x80;
+      000071 7E 80            [12]  549 	mov	r6,#0x80
+                                    550 ;	.\stcboot.c:66: }
+      000073 80 DD            [24]  551 	sjmp	00104$
+                                    552 ;------------------------------------------------------------
+                                    553 ;Allocation info for local variables in function 'display_number'
+                                    554 ;------------------------------------------------------------
+                                    555 ;temp          Allocated to registers r6 r7 
+                                    556 ;ones          Allocated to registers r4 
+                                    557 ;tens          Allocated to registers r3 
+                                    558 ;hundreds      Allocated to registers r2 
+                                    559 ;thousands     Allocated to registers r6 
+                                    560 ;------------------------------------------------------------
+                                    561 ;	.\stcboot.c:69: void display_number(void) {
+                                    562 ;	-----------------------------------------
+                                    563 ;	 function display_number
+                                    564 ;	-----------------------------------------
+      000075                        565 _display_number:
+                                    566 ;	.\stcboot.c:70: unsigned int temp = number;
+      000075 AE*00            [24]  567 	mov	r6,_number
+      000077 AF*01            [24]  568 	mov	r7,(_number + 1)
+                                    569 ;	.\stcboot.c:72: unsigned char ones = temp % 10;
+      000079 75*00 0A         [24]  570 	mov	__moduint_PARM_2,#0x0a
+      00007C 75*01 00         [24]  571 	mov	(__moduint_PARM_2 + 1),#0x00
+      00007F 8E 82            [24]  572 	mov	dpl, r6
+      000081 8F 83            [24]  573 	mov	dph, r7
+      000083 C0 07            [24]  574 	push	ar7
+      000085 C0 06            [24]  575 	push	ar6
+      000087 12r00r00         [24]  576 	lcall	__moduint
+      00008A AC 82            [24]  577 	mov	r4, dpl
+      00008C D0 06            [24]  578 	pop	ar6
+      00008E D0 07            [24]  579 	pop	ar7
+                                    580 ;	.\stcboot.c:73: temp /= 10;
+      000090 75*00 0A         [24]  581 	mov	__divuint_PARM_2,#0x0a
+      000093 75*01 00         [24]  582 	mov	(__divuint_PARM_2 + 1),#0x00
+                                    583 ;	.\stcboot.c:74: unsigned char tens = temp % 10;
+      000096 8E 82            [24]  584 	mov	dpl, r6
+      000098 8F 83            [24]  585 	mov	dph, r7
+      00009A C0 04            [24]  586 	push	ar4
+      00009C 12r00r00         [24]  587 	lcall	__divuint
+      00009F AE 82            [24]  588 	mov	r6, dpl
+      0000A1 AF 83            [24]  589 	mov	r7, dph
+      0000A3 D0 04            [24]  590 	pop	ar4
+      0000A5 75*00 0A         [24]  591 	mov	__moduint_PARM_2,#0x0a
+      0000A8 75*01 00         [24]  592 	mov	(__moduint_PARM_2 + 1),#0x00
+      0000AB 8E 82            [24]  593 	mov	dpl, r6
+      0000AD 8F 83            [24]  594 	mov	dph, r7
+      0000AF C0 07            [24]  595 	push	ar7
+      0000B1 C0 06            [24]  596 	push	ar6
+      0000B3 C0 04            [24]  597 	push	ar4
+      0000B5 12r00r00         [24]  598 	lcall	__moduint
+      0000B8 AB 82            [24]  599 	mov	r3, dpl
+      0000BA D0 04            [24]  600 	pop	ar4
+      0000BC D0 06            [24]  601 	pop	ar6
+      0000BE D0 07            [24]  602 	pop	ar7
+                                    603 ;	.\stcboot.c:75: temp /= 10;
+      0000C0 75*00 0A         [24]  604 	mov	__divuint_PARM_2,#0x0a
+      0000C3 75*01 00         [24]  605 	mov	(__divuint_PARM_2 + 1),#0x00
+                                    606 ;	.\stcboot.c:76: unsigned char hundreds = temp % 10;
+      0000C6 8E 82            [24]  607 	mov	dpl, r6
+      0000C8 8F 83            [24]  608 	mov	dph, r7
+      0000CA C0 04            [24]  609 	push	ar4
+      0000CC C0 03            [24]  610 	push	ar3
+      0000CE 12r00r00         [24]  611 	lcall	__divuint
+      0000D1 AE 82            [24]  612 	mov	r6, dpl
+      0000D3 AF 83            [24]  613 	mov	r7, dph
+      0000D5 D0 03            [24]  614 	pop	ar3
+      0000D7 D0 04            [24]  615 	pop	ar4
+      0000D9 75*00 0A         [24]  616 	mov	__moduint_PARM_2,#0x0a
+      0000DC 75*01 00         [24]  617 	mov	(__moduint_PARM_2 + 1),#0x00
+      0000DF 8E 82            [24]  618 	mov	dpl, r6
+      0000E1 8F 83            [24]  619 	mov	dph, r7
+      0000E3 C0 07            [24]  620 	push	ar7
+      0000E5 C0 06            [24]  621 	push	ar6
+      0000E7 C0 04            [24]  622 	push	ar4
+      0000E9 C0 03            [24]  623 	push	ar3
+      0000EB 12r00r00         [24]  624 	lcall	__moduint
+      0000EE AA 82            [24]  625 	mov	r2, dpl
+      0000F0 D0 03            [24]  626 	pop	ar3
+      0000F2 D0 04            [24]  627 	pop	ar4
+      0000F4 D0 06            [24]  628 	pop	ar6
+      0000F6 D0 07            [24]  629 	pop	ar7
+                                    630 ;	.\stcboot.c:77: temp /= 10;
+      0000F8 75*00 0A         [24]  631 	mov	__divuint_PARM_2,#0x0a
+      0000FB 75*01 00         [24]  632 	mov	(__divuint_PARM_2 + 1),#0x00
+                                    633 ;	.\stcboot.c:78: unsigned char thousands = temp % 10;
+      0000FE 8E 82            [24]  634 	mov	dpl, r6
+      000100 8F 83            [24]  635 	mov	dph, r7
+      000102 C0 04            [24]  636 	push	ar4
+      000104 C0 03            [24]  637 	push	ar3
+      000106 C0 02            [24]  638 	push	ar2
+      000108 12r00r00         [24]  639 	lcall	__divuint
+      00010B AE 82            [24]  640 	mov	r6, dpl
+      00010D 75 F0 0A         [24]  641 	mov	b,#0x0a
+      000110 EE               [12]  642 	mov	a,r6
+      000111 84               [48]  643 	div	ab
+                                    644 ;	.\stcboot.c:80: P0 = seg_table[thousands];
+      000112 E5 F0            [12]  645 	mov	a,b
+      000114 24r0C            [12]  646 	add	a, #_seg_table
+      000116 F9               [12]  647 	mov	r1,a
+      000117 87 80            [24]  648 	mov	_P0,@r1
+                                    649 ;	.\stcboot.c:81: P2_0 = 0;
+                                    650 ;	assignBit
+      000119 C2 A0            [12]  651 	clr	_P2_0
+                                    652 ;	.\stcboot.c:82: delay(500);
+      00011B 90 01 F4         [24]  653 	mov	dptr,#0x01f4
+      00011E 12r00r00         [24]  654 	lcall	_delay
+      000121 D0 02            [24]  655 	pop	ar2
+                                    656 ;	.\stcboot.c:83: P2_0 = 1;
+                                    657 ;	assignBit
+      000123 D2 A0            [12]  658 	setb	_P2_0
+                                    659 ;	.\stcboot.c:85: P0 = seg_table[hundreds];
+      000125 EA               [12]  660 	mov	a,r2
+      000126 24r0C            [12]  661 	add	a, #_seg_table
+      000128 F9               [12]  662 	mov	r1,a
+      000129 87 80            [24]  663 	mov	_P0,@r1
+                                    664 ;	.\stcboot.c:86: P2_1 = 0;
+                                    665 ;	assignBit
+      00012B C2 A1            [12]  666 	clr	_P2_1
+                                    667 ;	.\stcboot.c:87: delay(500);
+      00012D 90 01 F4         [24]  668 	mov	dptr,#0x01f4
+      000130 12r00r00         [24]  669 	lcall	_delay
+      000133 D0 03            [24]  670 	pop	ar3
+                                    671 ;	.\stcboot.c:88: P2_1 = 1;
+                                    672 ;	assignBit
+      000135 D2 A1            [12]  673 	setb	_P2_1
+                                    674 ;	.\stcboot.c:90: P0 = seg_table[tens];
+      000137 EB               [12]  675 	mov	a,r3
+      000138 24r0C            [12]  676 	add	a, #_seg_table
+      00013A F9               [12]  677 	mov	r1,a
+      00013B 87 80            [24]  678 	mov	_P0,@r1
+                                    679 ;	.\stcboot.c:91: P2_2 = 0;
+                                    680 ;	assignBit
+      00013D C2 A2            [12]  681 	clr	_P2_2
+                                    682 ;	.\stcboot.c:92: delay(500);
+      00013F 90 01 F4         [24]  683 	mov	dptr,#0x01f4
+      000142 12r00r00         [24]  684 	lcall	_delay
+      000145 D0 04            [24]  685 	pop	ar4
+                                    686 ;	.\stcboot.c:93: P2_2 = 1;
+                                    687 ;	assignBit
+      000147 D2 A2            [12]  688 	setb	_P2_2
+                                    689 ;	.\stcboot.c:95: P0 = seg_table[ones];
+      000149 EC               [12]  690 	mov	a,r4
+      00014A 24r0C            [12]  691 	add	a, #_seg_table
+      00014C F9               [12]  692 	mov	r1,a
+      00014D 87 80            [24]  693 	mov	_P0,@r1
+                                    694 ;	.\stcboot.c:96: P2_3 = 0;
+                                    695 ;	assignBit
+      00014F C2 A3            [12]  696 	clr	_P2_3
+                                    697 ;	.\stcboot.c:97: delay(500);
+      000151 90 01 F4         [24]  698 	mov	dptr,#0x01f4
+      000154 12r00r00         [24]  699 	lcall	_delay
+                                    700 ;	.\stcboot.c:98: P2_3 = 1;
+                                    701 ;	assignBit
+      000157 D2 A3            [12]  702 	setb	_P2_3
+                                    703 ;	.\stcboot.c:99: }
+      000159 22               [24]  704 	ret
+                                    705 ;------------------------------------------------------------
+                                    706 ;Allocation info for local variables in function 'number_clicker'
+                                    707 ;------------------------------------------------------------
+                                    708 ;	.\stcboot.c:103: void number_clicker(void) {
+                                    709 ;	-----------------------------------------
+                                    710 ;	 function number_clicker
+                                    711 ;	-----------------------------------------
+      00015A                        712 _number_clicker:
+                                    713 ;	.\stcboot.c:105: if ((P3 & 0x08) == 0) { // Button Pressed
+      00015A E5 B0            [12]  714 	mov	a,_P3
+      00015C 20 E3 1E         [24]  715 	jb	acc.3,00104$
+                                    716 ;	.\stcboot.c:106: delay(5000);
+      00015F 90 13 88         [24]  717 	mov	dptr,#0x1388
+      000162 12r00r00         [24]  718 	lcall	_delay
+                                    719 ;	.\stcboot.c:107: number++;
+      000165 05*00            [12]  720 	inc	_number
+      000167 E4               [12]  721 	clr	a
+      000168 B5*00 02         [24]  722 	cjne	a,_number,00137$
+      00016B 05*01            [12]  723 	inc	(_number + 1)
+      00016D                        724 00137$:
+                                    725 ;	.\stcboot.c:108: if (number > 9999) number = 0; // Roll over to 0
+      00016D C3               [12]  726 	clr	c
+      00016E 74 0F            [12]  727 	mov	a,#0x0f
+      000170 95*00            [12]  728 	subb	a,_number
+      000172 74 27            [12]  729 	mov	a,#0x27
+      000174 95*01            [12]  730 	subb	a,(_number + 1)
+      000176 50 05            [24]  731 	jnc	00104$
+      000178 E4               [12]  732 	clr	a
+      000179 F5*00            [12]  733 	mov	_number,a
+      00017B F5*01            [12]  734 	mov	(_number + 1),a
+      00017D                        735 00104$:
+                                    736 ;	.\stcboot.c:114: if ((P3 & 0x12) == 0) { // Button Pressed
+      00017D E5 B0            [12]  737 	mov	a,_P3
+      00017F 54 12            [12]  738 	anl	a,#0x12
+      000181 70 1D            [24]  739 	jnz	00109$
+                                    740 ;	.\stcboot.c:115: delay(5000);
+      000183 90 13 88         [24]  741 	mov	dptr,#0x1388
+      000186 12r00r00         [24]  742 	lcall	_delay
+                                    743 ;	.\stcboot.c:116: if (number == 0) number = 9999; // Roll over to 9999
+      000189 E5*00            [12]  744 	mov	a,_number
+      00018B 45*01            [12]  745 	orl	a,(_number + 1)
+      00018D 70 08            [24]  746 	jnz	00106$
+      00018F 75*00 0F         [24]  747 	mov	_number,#0x0f
+      000192 75*01 27         [24]  748 	mov	(_number + 1),#0x27
+      000195 80 09            [24]  749 	sjmp	00109$
+      000197                        750 00106$:
+                                    751 ;	.\stcboot.c:117: else number--;
+      000197 15*00            [12]  752 	dec	_number
+      000199 74 FF            [12]  753 	mov	a,#0xff
+      00019B B5*00 02         [24]  754 	cjne	a,_number,00142$
+      00019E 15*01            [12]  755 	dec	(_number + 1)
+      0001A0                        756 00142$:
+      0001A0                        757 00109$:
+                                    758 ;	.\stcboot.c:121: display_number();
+                                    759 ;	.\stcboot.c:123: }
+      0001A0 02r00r75         [24]  760 	ljmp	_display_number
+                                    761 ;------------------------------------------------------------
+                                    762 ;Allocation info for local variables in function 'main'
+                                    763 ;------------------------------------------------------------
+                                    764 ;	.\stcboot.c:125: void main(void) {
+                                    765 ;	-----------------------------------------
+                                    766 ;	 function main
+                                    767 ;	-----------------------------------------
+      0001A3                        768 _main:
+                                    769 ;	.\stcboot.c:126: while (1) {
+      0001A3                        770 00102$:
+                                    771 ;	.\stcboot.c:129: dual_cylon();
+      0001A3 12r00r4E         [24]  772 	lcall	_dual_cylon
+                                    773 ;	.\stcboot.c:132: }
+      0001A6 80 FB            [24]  774 	sjmp	00102$
+                                    775 	.area CSEG    (CODE)
+                                    776 	.area CONST   (CODE)
+                                    777 	.area CONST   (CODE)
+      000000                        778 _period:
+      000000 E8 03 00 00            779 	.byte #0xe8, #0x03, #0x00, #0x00	; 1000
+                                    780 	.area CSEG    (CODE)
+                                    781 	.area XINIT   (CODE)
+                                    782 	.area CABS    (ABS,CODE)

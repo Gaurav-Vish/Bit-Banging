@@ -41,32 +41,19 @@ void binary_count(void) {
 
 // Cylon effect
 void cylon(void) {
-    unsigned char direction = 0;
+    unsigned char pos = 1;
     while (1) {
-        if(direction==0){
-            unsigned char pos = 1;
-            P1 = ~pos;  // Invert output to turn LEDs on
-            delay(5000);
-            pos <<= 1;
-            if (pos == 0) direction=1;
-            break;
-        }
-        else{
-            unsigned char pos = 0;
-            P1 = ~pos;  // Invert output to turn LEDs on
-            delay(5000);
-            pos >>= 1;
-            if (pos == 1) direction=0;
-            break;
-        }
-        
+        P1 = ~pos;  // Invert output to turn LEDs on
+        delay(5000);
+        pos <<= 1;
+        if (pos == 0) pos = 1;  // Reset to start position
     }
 }
 
 // Dual Cylon effect
 void dual_cylon(void) {
     unsigned char pos1 = 1, pos2 = 0x80;
-    // while (1) {
+    while (1) {
         P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
         delay(5000);
         pos1 <<= 1;
@@ -75,7 +62,7 @@ void dual_cylon(void) {
             pos1 = 1;
             pos2 = 0x80;
         }
-    // }
+    }
 }
 
 // Function to display a number (0-9999) on the 7-segment display
@@ -137,9 +124,9 @@ void number_clicker(void) {
 
 void main(void) {
     while (1) {
-        // binary_count();
-        // cylon();
-        // dual_cylon();
+        binary_count();
+        cylon();
+        dual_cylon();
         number_clicker();
     }
 }

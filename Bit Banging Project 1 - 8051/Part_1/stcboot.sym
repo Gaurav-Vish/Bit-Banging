@@ -319,11 +319,11 @@ Symbol Table
   5 _currentmillis                                                 000008 GR
  18 _cylon                                                         000035 GR
  18 _delay                                                         000000 GR
- 18 _display_number                                                000047 GR
- 18 _dual_cylon                                                    00003E GR
- 18 _main                                                          000175 GR
+ 18 _display_number                                                000075 GR
+ 18 _dual_cylon                                                    00004E GR
+ 18 _main                                                          0001A3 GR
   5 _number                                                        000000 GR
- 18 _number_clicker                                                00012C GR
+ 18 _number_clicker                                                00015A GR
  19 _period                                                        000000 GR
   5 _seg_table                                                     00000C GR
   5 _startmillis                                                   000004 GR
@@ -573,7 +573,7 @@ Area Table
   15 GSINIT5                                    size      0   flags   20
   16 GSINIT                                     size     27   flags   20
   17 GSFINAL                                    size      3   flags   20
-  18 CSEG                                       size    17A   flags   20
+  18 CSEG                                       size    1A8   flags   20
   19 CONST                                      size      4   flags   20
   1A XINIT                                      size      0   flags   20
   1B CABS                                       size      0   flags   28
