@@ -16,6 +16,7 @@ C:   00000000  l_GSINIT1
 C:   00000000  l_GSINIT5                       
 C:   00000000  l_IABS                          
 C:   00000000  l_ISEG                          
+C:   00000000  l_OSEG                          
 C:   00000000  l_PSEG                          
 C:   00000000  l_REG_BANK_1                    
 C:   00000000  l_REG_BANK_2                    
@@ -42,21 +43,20 @@ C:   00000000  s_XABS
 C:   00000001  s_PSEG                          
 C:   00000001  s_XISEG                         
 C:   00000001  s_XSEG                          
-C:   00000002  l_OSEG                          
 C:   00000003  l_GSFINAL                       
 C:   00000003  l_GSINIT0                       
 C:   00000008  l_REG_BANK_0                    
 C:   00000008  s_REG_BANK_1                    
 C:   0000000A  l_GSINIT2                       
 C:   00000010  s_REG_BANK_2                    
-C:   00000014  s_OSEG                          
-C:   00000016  s_SSEG                          
+C:   00000012  s_SSEG                          
 C:   00000018  s_BIT_BANK                      
+C:   00000018  s_OSEG                          
 C:   00000018  s_REG_BANK_3                    
+C:   0000001E  l_GSINIT                        
 C:   00000020  s_BSEG_BYTES                    
 C:   00000020  s__CODE                         
 C:   00000022  l_GSINIT3                       
-C:   00000023  l_GSINIT                        
 ASxxxx Linker V03.00/V05.40 + sdld,  page 2.
 Hexadecimal  [32-Bits]
 
@@ -72,17 +72,17 @@ C:   0000004C  s_GSINIT0
 C:   0000004F  s_GSINIT1                       
 C:   0000004F  s_GSINIT2                       
 C:   00000059  s_GSINIT3                       
+C:   00000070  l_CSEG                          
 C:   0000007B  s_GSINIT4                       
 C:   00000080  l_DSEG                          
 C:   000000A5  s_GSINIT                        
 C:   000000A5  s_GSINIT5                       
-C:   000000C8  s_GSFINAL                       
-C:   000000CB  s_CSEG                          
-C:   000000EA  l_SSEG                          
+C:   000000C3  s_GSFINAL                       
+C:   000000C6  s_CSEG                          
+C:   000000EE  l_SSEG                          
 C:   00000100  l_IRAM                          
-C:   000001BE  l_CSEG                          
-C:   00000289  s_CONST                         
-C:   00000289  s_XINIT                         
+C:   00000136  s_CONST                         
+C:   00000136  s_XINIT                         
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 3.
 Hexadecimal  [32-Bits]
@@ -220,34 +220,19 @@ DSEG                                00000000    00000080 =         128. bytes (R
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
      00000008  _seg_table                         stcboot
-     00000012  _number                            stcboot
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 7.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-OSEG                                00000014    00000002 =           2. bytes (REL,OVR)
+SSEG                                00000012    000000EE =         238. bytes (REL,OVR)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00000014  __divsint_PARM_2                   _divuint
-     00000014  __divuint_PARM_2                   _divuint
-     00000014  __modsint_PARM_2                   _moduint
-     00000014  __moduint_PARM_2                   _moduint
+     00000012  __start__stack                     stcboot
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 8.
-Hexadecimal  [32-Bits]
-
-Area                                    Addr        Size        Decimal Bytes (Attributes)
---------------------------------        ----        ----        ------- ----- ------------
-SSEG                                00000016    000000EA =         234. bytes (REL,OVR)
-
-      Value  Global                              Global Defined In Module
-      -----  --------------------------------   ------------------------
-     00000016  __start__stack                     stcboot
-
-ASxxxx Linker V03.00/V05.40 + sdld,  page 9.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
@@ -262,7 +247,7 @@ C:   0000002F  sdcc_atomic_exchange_rollback_en   stcboot
 C:   0000003F  sdcc_atomic_compare_exchange_gpt   stcboot
 C:   00000049  __sdcc_program_startup             stcboot
 
-ASxxxx Linker V03.00/V05.40 + sdld,  page 10.
+ASxxxx Linker V03.00/V05.40 + sdld,  page 9.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
@@ -273,7 +258,7 @@ GSINIT0                             0000004C    00000003 =           3. bytes (R
       -----  --------------------------------   ------------------------
 C:   0000004C  __sdcc_gsinit_startup              
 
-ASxxxx Linker V03.00/V05.40 + sdld,  page 11.
+ASxxxx Linker V03.00/V05.40 + sdld,  page 10.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
@@ -282,7 +267,7 @@ GSINIT2                             0000004F    0000000A =          10. bytes (R
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-ASxxxx Linker V03.00/V05.40 + sdld,  page 12.
+ASxxxx Linker V03.00/V05.40 + sdld,  page 11.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
@@ -293,7 +278,7 @@ GSINIT3                             00000059    00000022 =          34. bytes (R
       -----  --------------------------------   ------------------------
 C:   00000059  __mcs51_genXINIT                   
 
-ASxxxx Linker V03.00/V05.40 + sdld,  page 13.
+ASxxxx Linker V03.00/V05.40 + sdld,  page 12.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
@@ -305,12 +290,21 @@ GSINIT4                             0000007B    0000002A =          42. bytes (R
 C:   0000007B  __mcs51_genRAMCLEAR                
 C:   00000081  __mcs51_genXRAMCLEAR               
 
+ASxxxx Linker V03.00/V05.40 + sdld,  page 13.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+GSINIT                              000000A5    0000001E =          30. bytes (REL,CON,CODE)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
 ASxxxx Linker V03.00/V05.40 + sdld,  page 14.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-GSINIT                              000000A5    00000023 =          35. bytes (REL,CON,CODE)
+GSFINAL                             000000C3    00000003 =           3. bytes (REL,CON,CODE)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
@@ -319,28 +313,16 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-GSFINAL                             000000C8    00000003 =           3. bytes (REL,CON,CODE)
+CSEG                                000000C6    00000070 =         112. bytes (REL,CON,CODE)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
+C:   000000C6  _delay                             stcboot
+C:   000000E3  _display                           stcboot
+C:   00000118  _main                              stcboot
+C:   00000132  ___sdcc_external_startup           _startup
+
 ASxxxx Linker V03.00/V05.40 + sdld,  page 16.
-Hexadecimal  [32-Bits]
-
-Area                                    Addr        Size        Decimal Bytes (Attributes)
---------------------------------        ----        ----        ------- ----- ------------
-CSEG                                000000CB    000001BE =         446. bytes (REL,CON,CODE)
-
-      Value  Global                              Global Defined In Module
-      -----  --------------------------------   ------------------------
-C:   000000CB  _delay                             stcboot
-C:   000000DD  _display_number                    stcboot
-C:   000001C2  _number_clicker                    stcboot
-C:   0000020C  _main                              stcboot
-C:   0000020F  __divuint                          _divuint
-C:   00000238  __moduint                          _moduint
-C:   00000285  ___sdcc_external_startup           _startup
-
-ASxxxx Linker V03.00/V05.40 + sdld,  page 17.
 
 Files Linked                              [ module(s) ]
 
@@ -349,14 +331,10 @@ stcboot.rel                               [  ]
 
 Libraries Linked                          [ object file ]
 
-C:\Program Files\SDCC\bin\..\lib\small/libint.lib
-                                          [ _divuint.rel ]
 C:\Program Files\SDCC\bin\..\lib\small/mcs51.lib
                                           [ crtclear.rel ]
 C:\Program Files\SDCC\bin\..\lib\small/mcs51.lib
                                           [ crtxinit.rel ]
-C:\Program Files\SDCC\bin\..\lib\small/libint.lib
-                                          [ _moduint.rel ]
 C:\Program Files\SDCC\bin\..\lib\small/mcs51.lib
                                           [ crtxclear.rel ]
 C:\Program Files\SDCC\bin\..\lib\small/mcs51.lib
@@ -366,7 +344,7 @@ C:\Program Files\SDCC\bin\..\lib\small/mcs51.lib
 C:\Program Files\SDCC\bin\..\lib\small/libsdcc.lib
                                           [ _startup.rel ]
 
-ASxxxx Linker V03.00/V05.40 + sdld,  page 18.
+ASxxxx Linker V03.00/V05.40 + sdld,  page 17.
 
 User Base Address Definitions
 

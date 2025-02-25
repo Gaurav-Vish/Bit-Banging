@@ -11,7 +11,6 @@ C:   00000000  l_BIT_BANK
 C:   00000000  l_BSEG                          
 C:   00000000  l_BSEG_BYTES                    
 C:   00000000  l_CABS                          
-C:   00000000  l_CONST                         
 C:   00000000  l_GSINIT1                       
 C:   00000000  l_GSINIT5                       
 C:   00000000  l_IABS                          
@@ -45,15 +44,16 @@ C:   00000001  s_XSEG
 C:   00000002  l_OSEG                          
 C:   00000003  l_GSFINAL                       
 C:   00000003  l_GSINIT0                       
+C:   00000004  l_CONST                         
 C:   00000008  l_REG_BANK_0                    
 C:   00000008  s_REG_BANK_1                    
 C:   0000000A  l_GSINIT2                       
 C:   00000010  s_REG_BANK_2                    
-C:   00000016  s_OSEG                          
 C:   00000018  s_BIT_BANK                      
 C:   00000018  s_REG_BANK_3                    
-C:   00000018  s_SSEG                          
+C:   0000001E  s_OSEG                          
 C:   00000020  s_BSEG_BYTES                    
+C:   00000020  s_SSEG                          
 C:   00000020  s__CODE                         
 C:   00000022  l_GSINIT3                       
 C:   00000027  l_GSINIT                        
@@ -78,11 +78,11 @@ C:   000000A5  s_GSINIT
 C:   000000A5  s_GSINIT5                       
 C:   000000CC  s_GSFINAL                       
 C:   000000CF  s_CSEG                          
-C:   000000E8  l_SSEG                          
+C:   000000E0  l_SSEG                          
 C:   00000100  l_IRAM                          
-C:   00000229  l_CSEG                          
-C:   000002F8  s_CONST                         
-C:   000002F8  s_XINIT                         
+C:   000001F4  l_CSEG                          
+C:   000002C3  s_CONST                         
+C:   000002C7  s_XINIT                         
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 3.
 Hexadecimal  [32-Bits]
@@ -221,31 +221,34 @@ DSEG                                00000000    00000080 =         128. bytes (R
       -----  --------------------------------   ------------------------
      00000008  _number                            stcboot
      0000000A  _switchCount                       stcboot
-     0000000C  _seg_table                         stcboot
+     0000000C  _startmillis                       stcboot
+     00000010  _currentmillis                     stcboot
+     00000014  _seg_table                         stcboot
+
 ASxxxx Linker V03.00/V05.40 + sdld,  page 7.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-OSEG                                00000016    00000002 =           2. bytes (REL,OVR)
+OSEG                                0000001E    00000002 =           2. bytes (REL,OVR)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00000016  __divsint_PARM_2                   _divuint
-     00000016  __divuint_PARM_2                   _divuint
-     00000016  __modsint_PARM_2                   _moduint
-     00000016  __moduint_PARM_2                   _moduint
+     0000001E  __divsint_PARM_2                   _divuint
+     0000001E  __divuint_PARM_2                   _divuint
+     0000001E  __modsint_PARM_2                   _moduint
+     0000001E  __moduint_PARM_2                   _moduint
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 8.
 Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-SSEG                                00000018    000000E8 =         232. bytes (REL,OVR)
+SSEG                                00000020    000000E0 =         224. bytes (REL,OVR)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
-     00000018  __start__stack                     stcboot
+     00000020  __start__stack                     stcboot
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 9.
 Hexadecimal  [32-Bits]
@@ -328,22 +331,33 @@ Hexadecimal  [32-Bits]
 
 Area                                    Addr        Size        Decimal Bytes (Attributes)
 --------------------------------        ----        ----        ------- ----- ------------
-CSEG                                000000CF    00000229 =         553. bytes (REL,CON,CODE)
+CSEG                                000000CF    000001F4 =         500. bytes (REL,CON,CODE)
 
       Value  Global                              Global Defined In Module
       -----  --------------------------------   ------------------------
 C:   000000CF  _delay                             stcboot
 C:   000000E1  _binary_count                      stcboot
-C:   0000010A  _cylon                             stcboot
-C:   00000123  _dual_cylon                        stcboot
-C:   0000014A  _display_number                    stcboot
-C:   0000022F  _number_clicker                    stcboot
-C:   00000279  _main                              stcboot
-C:   0000027E  __divuint                          _divuint
-C:   000002A7  __moduint                          _moduint
-C:   000002F4  ___sdcc_external_startup           _startup
+C:   00000104  _cylon                             stcboot
+C:   0000010D  _dual_cylon                        stcboot
+C:   00000116  _display_number                    stcboot
+C:   000001FB  _number_clicker                    stcboot
+C:   00000244  _main                              stcboot
+C:   00000249  __divuint                          _divuint
+C:   00000272  __moduint                          _moduint
+C:   000002BF  ___sdcc_external_startup           _startup
 
 ASxxxx Linker V03.00/V05.40 + sdld,  page 17.
+Hexadecimal  [32-Bits]
+
+Area                                    Addr        Size        Decimal Bytes (Attributes)
+--------------------------------        ----        ----        ------- ----- ------------
+CONST                               000002C3    00000004 =           4. bytes (REL,CON,CODE)
+
+      Value  Global                              Global Defined In Module
+      -----  --------------------------------   ------------------------
+C:   000002C3  _period                            stcboot
+
+ASxxxx Linker V03.00/V05.40 + sdld,  page 18.
 
 Files Linked                              [ module(s) ]
 
@@ -369,7 +383,7 @@ C:\Program Files\SDCC\bin\..\lib\small/mcs51.lib
 C:\Program Files\SDCC\bin\..\lib\small/libsdcc.lib
                                           [ _startup.rel ]
 
-ASxxxx Linker V03.00/V05.40 + sdld,  page 18.
+ASxxxx Linker V03.00/V05.40 + sdld,  page 19.
 
 User Base Address Definitions
 

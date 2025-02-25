@@ -2,7 +2,7 @@
 
 // Function Prototypes
 void delay(unsigned int time);
-int binary_count(void);
+void binary_count(void);
 void cylon(void);
 void dual_cylon(void);
 void number_clicker(void);
@@ -11,6 +11,9 @@ void display_number(void);
 // Global Variables
 unsigned int number = 0;
 unsigned int switchCount = 0;
+unsigned long startmillis;
+unsigned long currentmillis;
+const unsigned long period = 1000;
 
 // 7-Segment Lookup Table (Common Cathode)
 unsigned char seg_table[] = {
@@ -23,39 +26,47 @@ void delay(unsigned int time) {
 }
 
 // Binary count from 0-255
-int binary_count(void) {
-    unsigned char count = 0;
-    if((P3 & 0x04) == 0){
-        switchCount++;
-        return 0;
+void binary_count(void) {
+    unsigned int count = 0;
+    do{
+        // startmillis = millis();
+        P1 = ~count;  // Output inverted count to LEDs
+        // if (currentmillis - startmillis >= period)
+        delay(5000);
+        count++;
     }
-    else{
-        while (1) {
-            P1 = ~count;  // Output inverted count to LEDs
-            delay(500);
-            count++;
-            if(count == 255){
-                return 0;
-            }
-        }
-    }
+    while (count < 256);
+    return;
 }
 
 // Cylon effect
 void cylon(void) {
-    unsigned char pos = 1;
+    unsigned char direction = 0;
     while (1) {
-        P1 = ~pos;  // Invert output to turn LEDs on
-        delay(5000);
-        pos <<= 1;
-        if (pos == 0) pos = 1;  // Reset to start position
+        if(direction==0){
+            unsigned char pos = 1;
+            P1 = ~pos;  // Invert output to turn LEDs on
+            delay(5000);
+            pos <<= 1;
+            if (pos == 0) direction=1;
+            break;
+        }
+        else{
+            unsigned char pos = 0;
+            P1 = ~pos;  // Invert output to turn LEDs on
+            delay(5000);
+            pos >>= 1;
+            if (pos == 1) direction=0;
+            break;
+        }
+        
     }
 }
 
 // Dual Cylon effect
 void dual_cylon(void) {
     unsigned char pos1 = 1, pos2 = 0x80;
-    while (1) {
+    // while (1) {
         P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
         delay(5000);
         pos1 <<= 1;
@@ -64,7 +75,7 @@ void dual_cylon(void) {
             pos1 = 1;
             pos2 = 0x80;
         }
-    }
+    // }
 }
 
 // Function to display a number (0-9999) on the 7-segment display
@@ -103,9 +114,9 @@ void display_number(void) {
 
 // Button-controlled number increment/decrement
 void number_clicker(void) {
-    while (1) {
+    // while (1) {
         if ((P3 & 0x08) == 0) { // Button Pressed
-            delay(20000);
+            delay(5000);
             number++;
             if (number > 9999) number = 0; // Roll over to 0
 //                display_number();
@@ -113,46 +124,22 @@ void number_clicker(void) {
         }
 
         // Decrement Number (S4 - P3.2)
-        if ((P3 & 0x04) == 0) { // Button Pressed
-            delay(20000);
+        if ((P3 & 0x12) == 0) { // Button Pressed
+            delay(5000);
             if (number == 0) number = 9999; // Roll over to 9999
             else number--;
 //                display_number();
 //            }
         }
-        // Update the 7-segment display
         display_number();
-    }
+    // }
 }
 
-// Main function
 void main(void) {
     while (1) {
-//        binary_count();
-//        cylon();
-//        dual_cylon();
+        // binary_count();
+        // cylon();
+        // dual_cylon();
         number_clicker();
     }
-//    unsigned char count = 0;
-//    if((P3 & 0x04) == 0){
-//        count++;
-//    }
-//    while(1){
-//        switch(switchCount % 5){
-//        case 1:
-//            binary_count();
-//            break;
-//        case 2:
-//            cylon();
-//            break;
-//        case 3:
-//            dual_cylon();
-//            break;
-//        case 4:
-//            number_clicker();
-//            break;
-//        default:
-//            P1 = 0x00;
-//        }
-//    }
 }
