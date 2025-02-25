@@ -234,763 +234,724 @@
                                     234 	.area REG_BANK_1	(REL,OVR,DATA)
       000000                        235 	.ds 8
                                     236 ;--------------------------------------------------------
-                                    237 ; overlayable bit register bank
+                                    237 ; internal ram data
                                     238 ;--------------------------------------------------------
-                                    239 	.area BIT_BANK	(REL,OVR,DATA)
-      000000                        240 bits:
-      000000                        241 	.ds 1
-                           008000   242 	b0 = bits[0]
-                           008100   243 	b1 = bits[1]
-                           008200   244 	b2 = bits[2]
-                           008300   245 	b3 = bits[3]
-                           008400   246 	b4 = bits[4]
-                           008500   247 	b5 = bits[5]
-                           008600   248 	b6 = bits[6]
-                           008700   249 	b7 = bits[7]
-                                    250 ;--------------------------------------------------------
-                                    251 ; internal ram data
+                                    239 	.area DSEG    (DATA)
+      000000                        240 _number::
+      000000                        241 	.ds 2
+      000002                        242 _switchCount::
+      000002                        243 	.ds 2
+      000004                        244 _startmillis::
+      000004                        245 	.ds 4
+      000008                        246 _currentmillis::
+      000008                        247 	.ds 4
+      00000C                        248 _buttonIndex::
+      00000C                        249 	.ds 2
+      00000E                        250 _seg_table::
+      00000E                        251 	.ds 10
                                     252 ;--------------------------------------------------------
-                                    253 	.area DSEG    (DATA)
-      000000                        254 _number::
-      000000                        255 	.ds 2
-      000002                        256 _switchCount::
-      000002                        257 	.ds 2
-      000004                        258 _startmillis::
-      000004                        259 	.ds 4
-      000008                        260 _currentmillis::
-      000008                        261 	.ds 4
-      00000C                        262 _buttonIndex::
-      00000C                        263 	.ds 2
-      00000E                        264 _seg_table::
-      00000E                        265 	.ds 10
-                                    266 ;--------------------------------------------------------
-                                    267 ; overlayable items in internal ram
-                                    268 ;--------------------------------------------------------
-                                    269 	.area	OSEG    (OVR,DATA)
-                                    270 ;--------------------------------------------------------
-                                    271 ; Stack segment in internal ram
+                                    253 ; overlayable items in internal ram
+                                    254 ;--------------------------------------------------------
+                                    255 	.area	OSEG    (OVR,DATA)
+                                    256 ;--------------------------------------------------------
+                                    257 ; Stack segment in internal ram
+                                    258 ;--------------------------------------------------------
+                                    259 	.area SSEG
+      000000                        260 __start__stack:
+      000000                        261 	.ds	1
+                                    262 
+                                    263 ;--------------------------------------------------------
+                                    264 ; indirectly addressable internal ram data
+                                    265 ;--------------------------------------------------------
+                                    266 	.area ISEG    (DATA)
+                                    267 ;--------------------------------------------------------
+                                    268 ; absolute internal ram data
+                                    269 ;--------------------------------------------------------
+                                    270 	.area IABS    (ABS,DATA)
+                                    271 	.area IABS    (ABS,DATA)
                                     272 ;--------------------------------------------------------
-                                    273 	.area SSEG
-      000000                        274 __start__stack:
-      000000                        275 	.ds	1
-                                    276 
-                                    277 ;--------------------------------------------------------
-                                    278 ; indirectly addressable internal ram data
-                                    279 ;--------------------------------------------------------
-                                    280 	.area ISEG    (DATA)
-                                    281 ;--------------------------------------------------------
-                                    282 ; absolute internal ram data
-                                    283 ;--------------------------------------------------------
-                                    284 	.area IABS    (ABS,DATA)
-                                    285 	.area IABS    (ABS,DATA)
+                                    273 ; bit data
+                                    274 ;--------------------------------------------------------
+                                    275 	.area BSEG    (BIT)
+                                    276 ;--------------------------------------------------------
+                                    277 ; paged external ram data
+                                    278 ;--------------------------------------------------------
+                                    279 	.area PSEG    (PAG,XDATA)
+                                    280 ;--------------------------------------------------------
+                                    281 ; uninitialized external ram data
+                                    282 ;--------------------------------------------------------
+                                    283 	.area XSEG    (XDATA)
+                                    284 ;--------------------------------------------------------
+                                    285 ; absolute external ram data
                                     286 ;--------------------------------------------------------
-                                    287 ; bit data
+                                    287 	.area XABS    (ABS,XDATA)
                                     288 ;--------------------------------------------------------
-                                    289 	.area BSEG    (BIT)
+                                    289 ; initialized external ram data
                                     290 ;--------------------------------------------------------
-                                    291 ; paged external ram data
-                                    292 ;--------------------------------------------------------
-                                    293 	.area PSEG    (PAG,XDATA)
-                                    294 ;--------------------------------------------------------
-                                    295 ; uninitialized external ram data
-                                    296 ;--------------------------------------------------------
-                                    297 	.area XSEG    (XDATA)
-                                    298 ;--------------------------------------------------------
-                                    299 ; absolute external ram data
-                                    300 ;--------------------------------------------------------
-                                    301 	.area XABS    (ABS,XDATA)
+                                    291 	.area XISEG   (XDATA)
+                                    292 	.area HOME    (CODE)
+                                    293 	.area GSINIT0 (CODE)
+                                    294 	.area GSINIT1 (CODE)
+                                    295 	.area GSINIT2 (CODE)
+                                    296 	.area GSINIT3 (CODE)
+                                    297 	.area GSINIT4 (CODE)
+                                    298 	.area GSINIT5 (CODE)
+                                    299 	.area GSINIT  (CODE)
+                                    300 	.area GSFINAL (CODE)
+                                    301 	.area CSEG    (CODE)
                                     302 ;--------------------------------------------------------
-                                    303 ; initialized external ram data
+                                    303 ; interrupt vector
                                     304 ;--------------------------------------------------------
-                                    305 	.area XISEG   (XDATA)
-                                    306 	.area HOME    (CODE)
-                                    307 	.area GSINIT0 (CODE)
-                                    308 	.area GSINIT1 (CODE)
-                                    309 	.area GSINIT2 (CODE)
-                                    310 	.area GSINIT3 (CODE)
-                                    311 	.area GSINIT4 (CODE)
-                                    312 	.area GSINIT5 (CODE)
-                                    313 	.area GSINIT  (CODE)
-                                    314 	.area GSFINAL (CODE)
-                                    315 	.area CSEG    (CODE)
-                                    316 ;--------------------------------------------------------
-                                    317 ; interrupt vector
-                                    318 ;--------------------------------------------------------
-                                    319 	.area HOME    (CODE)
-      000000                        320 __interrupt_vect:
-      000000 02r00r00         [24]  321 	ljmp	__sdcc_gsinit_startup
-      000003 32               [24]  322 	reti
-      000004                        323 	.ds	7
-      00000B 02r00r10         [24]  324 	ljmp	_Timer0_isr
-                                    325 ; restartable atomic support routines
-      00000E                        326 	.ds	2
-      000010                        327 sdcc_atomic_exchange_rollback_start::
-      000010 00               [12]  328 	nop
-      000011 00               [12]  329 	nop
-      000012                        330 sdcc_atomic_exchange_pdata_impl:
-      000012 E2               [24]  331 	movx	a, @r0
-      000013 FB               [12]  332 	mov	r3, a
-      000014 EA               [12]  333 	mov	a, r2
-      000015 F2               [24]  334 	movx	@r0, a
-      000016 80 2C            [24]  335 	sjmp	sdcc_atomic_exchange_exit
-      000018 00               [12]  336 	nop
-      000019 00               [12]  337 	nop
-      00001A                        338 sdcc_atomic_exchange_xdata_impl:
-      00001A E0               [24]  339 	movx	a, @dptr
-      00001B FB               [12]  340 	mov	r3, a
-      00001C EA               [12]  341 	mov	a, r2
-      00001D F0               [24]  342 	movx	@dptr, a
-      00001E 80 24            [24]  343 	sjmp	sdcc_atomic_exchange_exit
-      000020                        344 sdcc_atomic_compare_exchange_idata_impl:
-      000020 E6               [12]  345 	mov	a, @r0
-      000021 B5 02 02         [24]  346 	cjne	a, ar2, .+#5
-      000024 EB               [12]  347 	mov	a, r3
-      000025 F6               [12]  348 	mov	@r0, a
-      000026 22               [24]  349 	ret
-      000027 00               [12]  350 	nop
-      000028                        351 sdcc_atomic_compare_exchange_pdata_impl:
-      000028 E2               [24]  352 	movx	a, @r0
-      000029 B5 02 02         [24]  353 	cjne	a, ar2, .+#5
-      00002C EB               [12]  354 	mov	a, r3
-      00002D F2               [24]  355 	movx	@r0, a
-      00002E 22               [24]  356 	ret
-      00002F 00               [12]  357 	nop
-      000030                        358 sdcc_atomic_compare_exchange_xdata_impl:
-      000030 E0               [24]  359 	movx	a, @dptr
-      000031 B5 02 02         [24]  360 	cjne	a, ar2, .+#5
-      000034 EB               [12]  361 	mov	a, r3
-      000035 F0               [24]  362 	movx	@dptr, a
-      000036 22               [24]  363 	ret
-      000037                        364 sdcc_atomic_exchange_rollback_end::
-                                    365 
-      000037                        366 sdcc_atomic_exchange_gptr_impl::
-      000037 30 F6 E0         [24]  367 	jnb	b.6, sdcc_atomic_exchange_xdata_impl
-      00003A A8 82            [24]  368 	mov	r0, dpl
-      00003C 20 F5 D3         [24]  369 	jb	b.5, sdcc_atomic_exchange_pdata_impl
-      00003F                        370 sdcc_atomic_exchange_idata_impl:
-      00003F EA               [12]  371 	mov	a, r2
-      000040 C6               [12]  372 	xch	a, @r0
-      000041 F5 82            [12]  373 	mov	dpl, a
-      000043 22               [24]  374 	ret
-      000044                        375 sdcc_atomic_exchange_exit:
-      000044 8B 82            [24]  376 	mov	dpl, r3
-      000046 22               [24]  377 	ret
-      000047                        378 sdcc_atomic_compare_exchange_gptr_impl::
-      000047 30 F6 E6         [24]  379 	jnb	b.6, sdcc_atomic_compare_exchange_xdata_impl
-      00004A A8 82            [24]  380 	mov	r0, dpl
-      00004C 20 F5 D9         [24]  381 	jb	b.5, sdcc_atomic_compare_exchange_pdata_impl
-      00004F 80 CF            [24]  382 	sjmp	sdcc_atomic_compare_exchange_idata_impl
-                                    383 ;--------------------------------------------------------
-                                    384 ; global & static initialisations
-                                    385 ;--------------------------------------------------------
-                                    386 	.area HOME    (CODE)
-                                    387 	.area GSINIT  (CODE)
-                                    388 	.area GSFINAL (CODE)
-                                    389 	.area GSINIT  (CODE)
-                                    390 	.globl __sdcc_gsinit_startup
-                                    391 	.globl __sdcc_program_startup
-                                    392 	.globl __start__stack
-                                    393 	.globl __mcs51_genXINIT
-                                    394 	.globl __mcs51_genXRAMCLEAR
-                                    395 	.globl __mcs51_genRAMCLEAR
-                                    396 ;	.\stcboot.c:14: unsigned int number = 0;
-      000000 E4               [12]  397 	clr	a
-      000001 F5*00            [12]  398 	mov	_number,a
-      000003 F5*01            [12]  399 	mov	(_number + 1),a
-                                    400 ;	.\stcboot.c:15: unsigned int switchCount = 0;
-      000005 F5*02            [12]  401 	mov	_switchCount,a
-      000007 F5*03            [12]  402 	mov	(_switchCount + 1),a
-                                    403 ;	.\stcboot.c:18: unsigned int buttonIndex = 0;
-      000009 F5*0C            [12]  404 	mov	_buttonIndex,a
-      00000B F5*0D            [12]  405 	mov	(_buttonIndex + 1),a
-                                    406 ;	.\stcboot.c:21: unsigned char seg_table[] = {
-      00000D 75*0E C0         [24]  407 	mov	_seg_table,#0xc0
-      000010 75*0F F9         [24]  408 	mov	(_seg_table + 0x0001),#0xf9
-      000013 75*10 A4         [24]  409 	mov	(_seg_table + 0x0002),#0xa4
-      000016 75*11 B0         [24]  410 	mov	(_seg_table + 0x0003),#0xb0
-      000019 75*12 99         [24]  411 	mov	(_seg_table + 0x0004),#0x99
-      00001C 75*13 92         [24]  412 	mov	(_seg_table + 0x0005),#0x92
-      00001F 75*14 82         [24]  413 	mov	(_seg_table + 0x0006),#0x82
-      000022 75*15 F8         [24]  414 	mov	(_seg_table + 0x0007),#0xf8
-      000025 75*16 80         [24]  415 	mov	(_seg_table + 0x0008),#0x80
-      000028 75*17 90         [24]  416 	mov	(_seg_table + 0x0009),#0x90
-                                    417 	.area GSFINAL (CODE)
-      000000 02r00r51         [24]  418 	ljmp	__sdcc_program_startup
-                                    419 ;--------------------------------------------------------
-                                    420 ; Home
-                                    421 ;--------------------------------------------------------
-                                    422 	.area HOME    (CODE)
-                                    423 	.area HOME    (CODE)
-      000051                        424 __sdcc_program_startup:
-      000051 02r02r95         [24]  425 	ljmp	_main
-                                    426 ;	return from main will return to caller
-                                    427 ;--------------------------------------------------------
-                                    428 ; code
-                                    429 ;--------------------------------------------------------
-                                    430 	.area CSEG    (CODE)
-                                    431 ;------------------------------------------------------------
-                                    432 ;Allocation info for local variables in function 'Init_Timer0'
-                                    433 ;------------------------------------------------------------
-                                    434 ;	.\stcboot.c:26: void Init_Timer0(void)
-                                    435 ;	-----------------------------------------
-                                    436 ;	 function Init_Timer0
-                                    437 ;	-----------------------------------------
-      000000                        438 _Init_Timer0:
-                           000007   439 	ar7 = 0x07
-                           000006   440 	ar6 = 0x06
-                           000005   441 	ar5 = 0x05
-                           000004   442 	ar4 = 0x04
-                           000003   443 	ar3 = 0x03
-                           000002   444 	ar2 = 0x02
-                           000001   445 	ar1 = 0x01
-                           000000   446 	ar0 = 0x00
-                                    447 ;	.\stcboot.c:28: TMOD |= 0x01;		// mode 1, 16-bit timer
-      000000 43 89 01         [24]  448 	orl	_TMOD,#0x01
-                                    449 ;	.\stcboot.c:29: TH0 = 0xFC;		// overflow at 65536
-      000003 75 8C FC         [24]  450 	mov	_TH0,#0xfc
-                                    451 ;	.\stcboot.c:30: TL0 = 0x18;
-      000006 75 8A 18         [24]  452 	mov	_TL0,#0x18
-                                    453 ;	.\stcboot.c:31: EA = 1;			// enable global interrupts
-                                    454 ;	assignBit
-      000009 D2 AF            [12]  455 	setb	_EA
-                                    456 ;	.\stcboot.c:32: ET0 = 1;		// enable timer0 interrupt
-                                    457 ;	assignBit
-      00000B D2 A9            [12]  458 	setb	_ET0
-                                    459 ;	.\stcboot.c:33: TR0 = 1;		// timer on
-                                    460 ;	assignBit
-      00000D D2 8C            [12]  461 	setb	_TR0
-                                    462 ;	.\stcboot.c:34: }
-      00000F 22               [24]  463 	ret
-                                    464 ;------------------------------------------------------------
-                                    465 ;Allocation info for local variables in function 'Timer0_isr'
-                                    466 ;------------------------------------------------------------
-                                    467 ;	.\stcboot.c:36: void Timer0_isr(void) __interrupt(1) __using(1)
-                                    468 ;	-----------------------------------------
-                                    469 ;	 function Timer0_isr
-                                    470 ;	-----------------------------------------
-      000010                        471 _Timer0_isr:
-                           00000F   472 	ar7 = 0x0f
-                           00000E   473 	ar6 = 0x0e
-                           00000D   474 	ar5 = 0x0d
-                           00000C   475 	ar4 = 0x0c
-                           00000B   476 	ar3 = 0x0b
-                           00000A   477 	ar2 = 0x0a
-                           000009   478 	ar1 = 0x09
-                           000008   479 	ar0 = 0x08
-      000010 C0*00            [24]  480 	push	bits
-      000012 C0 E0            [24]  481 	push	acc
-      000014 C0 F0            [24]  482 	push	b
-      000016 C0 82            [24]  483 	push	dpl
-      000018 C0 83            [24]  484 	push	dph
-      00001A C0 07            [24]  485 	push	(0+7)
-      00001C C0 06            [24]  486 	push	(0+6)
-      00001E C0 05            [24]  487 	push	(0+5)
-      000020 C0 04            [24]  488 	push	(0+4)
-      000022 C0 03            [24]  489 	push	(0+3)
-      000024 C0 02            [24]  490 	push	(0+2)
-      000026 C0 01            [24]  491 	push	(0+1)
-      000028 C0 00            [24]  492 	push	(0+0)
-      00002A C0 D0            [24]  493 	push	psw
-      00002C 75 D0 08         [24]  494 	mov	psw,#0x08
-                                    495 ;	.\stcboot.c:38: TH0 = 0xFC;		// reload
-      00002F 75 8C FC         [24]  496 	mov	_TH0,#0xfc
-                                    497 ;	.\stcboot.c:39: TL0 = 0x18;
-      000032 75 8A 18         [24]  498 	mov	_TL0,#0x18
-                                    499 ;	.\stcboot.c:40: buttonIndex++;
-      000035 05*0C            [12]  500 	inc	_buttonIndex
-      000037 E4               [12]  501 	clr	a
-      000038 B5*0C 02         [24]  502 	cjne	a,_buttonIndex,00123$
-      00003B 05*0D            [12]  503 	inc	(_buttonIndex + 1)
-      00003D                        504 00123$:
-                                    505 ;	.\stcboot.c:41: if (buttonIndex > 5)
-      00003D C3               [12]  506 	clr	c
-      00003E 74 05            [12]  507 	mov	a,#0x05
-      000040 95*0C            [12]  508 	subb	a,_buttonIndex
-      000042 E4               [12]  509 	clr	a
-      000043 95*0D            [12]  510 	subb	a,(_buttonIndex + 1)
-      000045 50 06            [24]  511 	jnc	00102$
-                                    512 ;	.\stcboot.c:42: buttonIndex = 1;
-      000047 75*0C 01         [24]  513 	mov	_buttonIndex,#0x01
-      00004A 75*0D 00         [24]  514 	mov	(_buttonIndex + 1),#0x00
-      00004D                        515 00102$:
-                                    516 ;	.\stcboot.c:43: switch(buttonIndex) {
-      00004D C3               [12]  517 	clr	c
-      00004E 74 04            [12]  518 	mov	a,#0x04
-      000050 95*0C            [12]  519 	subb	a,_buttonIndex
-      000052 E4               [12]  520 	clr	a
-      000053 95*0D            [12]  521 	subb	a,(_buttonIndex + 1)
-      000055 40 43            [24]  522 	jc	00109$
-      000057 E5*0C            [12]  523 	mov	a,_buttonIndex
-      000059 75 F0 03         [24]  524 	mov	b,#0x03
-      00005C A4               [48]  525 	mul	ab
-      00005D 90r00r61         [24]  526 	mov	dptr,#00126$
-      000060 73               [24]  527 	jmp	@a+dptr
-      000061                        528 00126$:
-      000061 02r00r9A         [24]  529 	ljmp	00109$
-      000064 02r00r70         [24]  530 	ljmp	00103$
-      000067 02r00r7B         [24]  531 	ljmp	00104$
-      00006A 02r00r86         [24]  532 	ljmp	00105$
-      00006D 02r00r91         [24]  533 	ljmp	00106$
-                                    534 ;	.\stcboot.c:44: case 1:
-      000070                        535 00103$:
-                                    536 ;	.\stcboot.c:45: binary_count();
-      000070 75 D0 00         [24]  537 	mov	psw,#0x00
-      000073 12r00rCB         [24]  538 	lcall	_binary_count
-      000076 75 D0 08         [24]  539 	mov	psw,#0x08
-                                    540 ;	.\stcboot.c:46: break;
-                                    541 ;	.\stcboot.c:47: case 2:
-      000079 80 1F            [24]  542 	sjmp	00109$
-      00007B                        543 00104$:
-                                    544 ;	.\stcboot.c:48: cylon();
-      00007B 75 D0 00         [24]  545 	mov	psw,#0x00
-      00007E 12r00rF6         [24]  546 	lcall	_cylon
-      000081 75 D0 08         [24]  547 	mov	psw,#0x08
-                                    548 ;	.\stcboot.c:49: break;
-                                    549 ;	.\stcboot.c:50: case 3:
-      000084 80 14            [24]  550 	sjmp	00109$
-      000086                        551 00105$:
-                                    552 ;	.\stcboot.c:51: dual_cylon();
-      000086 75 D0 00         [24]  553 	mov	psw,#0x00
-      000089 12r01r2C         [24]  554 	lcall	_dual_cylon
-      00008C 75 D0 08         [24]  555 	mov	psw,#0x08
-                                    556 ;	.\stcboot.c:52: break;
-                                    557 ;	.\stcboot.c:53: case 4:
-      00008F 80 09            [24]  558 	sjmp	00109$
-      000091                        559 00106$:
-                                    560 ;	.\stcboot.c:54: number_clicker();
-      000091 75 D0 00         [24]  561 	mov	psw,#0x00
-      000094 12r02r43         [24]  562 	lcall	_number_clicker
-      000097 75 D0 08         [24]  563 	mov	psw,#0x08
-                                    564 ;	.\stcboot.c:58: }
-      00009A                        565 00109$:
-                                    566 ;	.\stcboot.c:59: }
-      00009A D0 D0            [24]  567 	pop	psw
-      00009C D0 00            [24]  568 	pop	(0+0)
-      00009E D0 01            [24]  569 	pop	(0+1)
-      0000A0 D0 02            [24]  570 	pop	(0+2)
-      0000A2 D0 03            [24]  571 	pop	(0+3)
-      0000A4 D0 04            [24]  572 	pop	(0+4)
-      0000A6 D0 05            [24]  573 	pop	(0+5)
-      0000A8 D0 06            [24]  574 	pop	(0+6)
-      0000AA D0 07            [24]  575 	pop	(0+7)
-      0000AC D0 83            [24]  576 	pop	dph
-      0000AE D0 82            [24]  577 	pop	dpl
-      0000B0 D0 F0            [24]  578 	pop	b
-      0000B2 D0 E0            [24]  579 	pop	acc
-      0000B4 D0*00            [24]  580 	pop	bits
-      0000B6 02r00r00         [24]  581 	ljmp	sdcc_atomic_maybe_rollback
-                                    582 ;------------------------------------------------------------
-                                    583 ;Allocation info for local variables in function 'delay'
-                                    584 ;------------------------------------------------------------
-                                    585 ;time          Allocated to registers 
-                                    586 ;------------------------------------------------------------
-                                    587 ;	.\stcboot.c:63: void delay(unsigned int time) {
-                                    588 ;	-----------------------------------------
-                                    589 ;	 function delay
-                                    590 ;	-----------------------------------------
-      0000B9                        591 _delay:
-                           000007   592 	ar7 = 0x07
-                           000006   593 	ar6 = 0x06
-                           000005   594 	ar5 = 0x05
-                           000004   595 	ar4 = 0x04
-                           000003   596 	ar3 = 0x03
-                           000002   597 	ar2 = 0x02
-                           000001   598 	ar1 = 0x01
-                           000000   599 	ar0 = 0x00
-      0000B9 AE 82            [24]  600 	mov	r6, dpl
-      0000BB AF 83            [24]  601 	mov	r7, dph
-                                    602 ;	.\stcboot.c:64: while (time--);
-      0000BD                        603 00101$:
-      0000BD 8E 04            [24]  604 	mov	ar4,r6
-      0000BF 8F 05            [24]  605 	mov	ar5,r7
-      0000C1 1E               [12]  606 	dec	r6
-      0000C2 BE FF 01         [24]  607 	cjne	r6,#0xff,00113$
-      0000C5 1F               [12]  608 	dec	r7
-      0000C6                        609 00113$:
-      0000C6 EC               [12]  610 	mov	a,r4
-      0000C7 4D               [12]  611 	orl	a,r5
-      0000C8 70 F3            [24]  612 	jnz	00101$
-                                    613 ;	.\stcboot.c:65: }
-      0000CA 22               [24]  614 	ret
-                                    615 ;------------------------------------------------------------
-                                    616 ;Allocation info for local variables in function 'binary_count'
-                                    617 ;------------------------------------------------------------
-                                    618 ;count         Allocated to registers r6 r7 
+                                    305 	.area HOME    (CODE)
+      000000                        306 __interrupt_vect:
+      000000 02r00r00         [24]  307 	ljmp	__sdcc_gsinit_startup
+      000003 32               [24]  308 	reti
+      000004                        309 	.ds	7
+      00000B 02r00r10         [24]  310 	ljmp	_Timer0_isr
+                                    311 ; restartable atomic support routines
+      00000E                        312 	.ds	2
+      000010                        313 sdcc_atomic_exchange_rollback_start::
+      000010 00               [12]  314 	nop
+      000011 00               [12]  315 	nop
+      000012                        316 sdcc_atomic_exchange_pdata_impl:
+      000012 E2               [24]  317 	movx	a, @r0
+      000013 FB               [12]  318 	mov	r3, a
+      000014 EA               [12]  319 	mov	a, r2
+      000015 F2               [24]  320 	movx	@r0, a
+      000016 80 2C            [24]  321 	sjmp	sdcc_atomic_exchange_exit
+      000018 00               [12]  322 	nop
+      000019 00               [12]  323 	nop
+      00001A                        324 sdcc_atomic_exchange_xdata_impl:
+      00001A E0               [24]  325 	movx	a, @dptr
+      00001B FB               [12]  326 	mov	r3, a
+      00001C EA               [12]  327 	mov	a, r2
+      00001D F0               [24]  328 	movx	@dptr, a
+      00001E 80 24            [24]  329 	sjmp	sdcc_atomic_exchange_exit
+      000020                        330 sdcc_atomic_compare_exchange_idata_impl:
+      000020 E6               [12]  331 	mov	a, @r0
+      000021 B5 02 02         [24]  332 	cjne	a, ar2, .+#5
+      000024 EB               [12]  333 	mov	a, r3
+      000025 F6               [12]  334 	mov	@r0, a
+      000026 22               [24]  335 	ret
+      000027 00               [12]  336 	nop
+      000028                        337 sdcc_atomic_compare_exchange_pdata_impl:
+      000028 E2               [24]  338 	movx	a, @r0
+      000029 B5 02 02         [24]  339 	cjne	a, ar2, .+#5
+      00002C EB               [12]  340 	mov	a, r3
+      00002D F2               [24]  341 	movx	@r0, a
+      00002E 22               [24]  342 	ret
+      00002F 00               [12]  343 	nop
+      000030                        344 sdcc_atomic_compare_exchange_xdata_impl:
+      000030 E0               [24]  345 	movx	a, @dptr
+      000031 B5 02 02         [24]  346 	cjne	a, ar2, .+#5
+      000034 EB               [12]  347 	mov	a, r3
+      000035 F0               [24]  348 	movx	@dptr, a
+      000036 22               [24]  349 	ret
+      000037                        350 sdcc_atomic_exchange_rollback_end::
+                                    351 
+      000037                        352 sdcc_atomic_exchange_gptr_impl::
+      000037 30 F6 E0         [24]  353 	jnb	b.6, sdcc_atomic_exchange_xdata_impl
+      00003A A8 82            [24]  354 	mov	r0, dpl
+      00003C 20 F5 D3         [24]  355 	jb	b.5, sdcc_atomic_exchange_pdata_impl
+      00003F                        356 sdcc_atomic_exchange_idata_impl:
+      00003F EA               [12]  357 	mov	a, r2
+      000040 C6               [12]  358 	xch	a, @r0
+      000041 F5 82            [12]  359 	mov	dpl, a
+      000043 22               [24]  360 	ret
+      000044                        361 sdcc_atomic_exchange_exit:
+      000044 8B 82            [24]  362 	mov	dpl, r3
+      000046 22               [24]  363 	ret
+      000047                        364 sdcc_atomic_compare_exchange_gptr_impl::
+      000047 30 F6 E6         [24]  365 	jnb	b.6, sdcc_atomic_compare_exchange_xdata_impl
+      00004A A8 82            [24]  366 	mov	r0, dpl
+      00004C 20 F5 D9         [24]  367 	jb	b.5, sdcc_atomic_compare_exchange_pdata_impl
+      00004F 80 CF            [24]  368 	sjmp	sdcc_atomic_compare_exchange_idata_impl
+                                    369 ;--------------------------------------------------------
+                                    370 ; global & static initialisations
+                                    371 ;--------------------------------------------------------
+                                    372 	.area HOME    (CODE)
+                                    373 	.area GSINIT  (CODE)
+                                    374 	.area GSFINAL (CODE)
+                                    375 	.area GSINIT  (CODE)
+                                    376 	.globl __sdcc_gsinit_startup
+                                    377 	.globl __sdcc_program_startup
+                                    378 	.globl __start__stack
+                                    379 	.globl __mcs51_genXINIT
+                                    380 	.globl __mcs51_genXRAMCLEAR
+                                    381 	.globl __mcs51_genRAMCLEAR
+                                    382 ;	.\stcboot.c:14: unsigned int number = 0;
+      000000 E4               [12]  383 	clr	a
+      000001 F5*00            [12]  384 	mov	_number,a
+      000003 F5*01            [12]  385 	mov	(_number + 1),a
+                                    386 ;	.\stcboot.c:15: unsigned int switchCount = 0;
+      000005 F5*02            [12]  387 	mov	_switchCount,a
+      000007 F5*03            [12]  388 	mov	(_switchCount + 1),a
+                                    389 ;	.\stcboot.c:18: unsigned int buttonIndex = 0;
+      000009 F5*0C            [12]  390 	mov	_buttonIndex,a
+      00000B F5*0D            [12]  391 	mov	(_buttonIndex + 1),a
+                                    392 ;	.\stcboot.c:21: unsigned char seg_table[] = {
+      00000D 75*0E C0         [24]  393 	mov	_seg_table,#0xc0
+      000010 75*0F F9         [24]  394 	mov	(_seg_table + 0x0001),#0xf9
+      000013 75*10 A4         [24]  395 	mov	(_seg_table + 0x0002),#0xa4
+      000016 75*11 B0         [24]  396 	mov	(_seg_table + 0x0003),#0xb0
+      000019 75*12 99         [24]  397 	mov	(_seg_table + 0x0004),#0x99
+      00001C 75*13 92         [24]  398 	mov	(_seg_table + 0x0005),#0x92
+      00001F 75*14 82         [24]  399 	mov	(_seg_table + 0x0006),#0x82
+      000022 75*15 F8         [24]  400 	mov	(_seg_table + 0x0007),#0xf8
+      000025 75*16 80         [24]  401 	mov	(_seg_table + 0x0008),#0x80
+      000028 75*17 90         [24]  402 	mov	(_seg_table + 0x0009),#0x90
+                                    403 	.area GSFINAL (CODE)
+      000000 02r00r51         [24]  404 	ljmp	__sdcc_program_startup
+                                    405 ;--------------------------------------------------------
+                                    406 ; Home
+                                    407 ;--------------------------------------------------------
+                                    408 	.area HOME    (CODE)
+                                    409 	.area HOME    (CODE)
+      000051                        410 __sdcc_program_startup:
+      000051 02r01rFF         [24]  411 	ljmp	_main
+                                    412 ;	return from main will return to caller
+                                    413 ;--------------------------------------------------------
+                                    414 ; code
+                                    415 ;--------------------------------------------------------
+                                    416 	.area CSEG    (CODE)
+                                    417 ;------------------------------------------------------------
+                                    418 ;Allocation info for local variables in function 'Init_Timer0'
+                                    419 ;------------------------------------------------------------
+                                    420 ;	.\stcboot.c:26: void Init_Timer0(void)
+                                    421 ;	-----------------------------------------
+                                    422 ;	 function Init_Timer0
+                                    423 ;	-----------------------------------------
+      000000                        424 _Init_Timer0:
+                           000007   425 	ar7 = 0x07
+                           000006   426 	ar6 = 0x06
+                           000005   427 	ar5 = 0x05
+                           000004   428 	ar4 = 0x04
+                           000003   429 	ar3 = 0x03
+                           000002   430 	ar2 = 0x02
+                           000001   431 	ar1 = 0x01
+                           000000   432 	ar0 = 0x00
+                                    433 ;	.\stcboot.c:28: TMOD |= 0x01;		// mode 1, 16-bit timer
+      000000 43 89 01         [24]  434 	orl	_TMOD,#0x01
+                                    435 ;	.\stcboot.c:29: TH0 = 0xFC;		// overflow at 65536
+      000003 75 8C FC         [24]  436 	mov	_TH0,#0xfc
+                                    437 ;	.\stcboot.c:30: TL0 = 0x18;
+      000006 75 8A 18         [24]  438 	mov	_TL0,#0x18
+                                    439 ;	.\stcboot.c:31: EA = 1;			// enable global interrupts
+                                    440 ;	assignBit
+      000009 D2 AF            [12]  441 	setb	_EA
+                                    442 ;	.\stcboot.c:32: ET0 = 1;		// enable timer0 interrupt
+                                    443 ;	assignBit
+      00000B D2 A9            [12]  444 	setb	_ET0
+                                    445 ;	.\stcboot.c:33: TR0 = 1;		// timer on
+                                    446 ;	assignBit
+      00000D D2 8C            [12]  447 	setb	_TR0
+                                    448 ;	.\stcboot.c:34: }
+      00000F 22               [24]  449 	ret
+                                    450 ;------------------------------------------------------------
+                                    451 ;Allocation info for local variables in function 'Timer0_isr'
+                                    452 ;------------------------------------------------------------
+                                    453 ;	.\stcboot.c:36: void Timer0_isr(void) __interrupt(1) __using(1)
+                                    454 ;	-----------------------------------------
+                                    455 ;	 function Timer0_isr
+                                    456 ;	-----------------------------------------
+      000010                        457 _Timer0_isr:
+                           00000F   458 	ar7 = 0x0f
+                           00000E   459 	ar6 = 0x0e
+                           00000D   460 	ar5 = 0x0d
+                           00000C   461 	ar4 = 0x0c
+                           00000B   462 	ar3 = 0x0b
+                           00000A   463 	ar2 = 0x0a
+                           000009   464 	ar1 = 0x09
+                           000008   465 	ar0 = 0x08
+                                    466 ;	.\stcboot.c:38: TH0 = 0xFC;		// overflow at 65536
+      000010 75 8C FC         [24]  467 	mov	_TH0,#0xfc
+                                    468 ;	.\stcboot.c:39: TL0 = 0x18;
+      000013 75 8A 18         [24]  469 	mov	_TL0,#0x18
+                                    470 ;	.\stcboot.c:41: }
+      000016 32               [24]  471 	reti
+                                    472 ;	eliminated unneeded mov psw,# (no regs used in bank)
+                                    473 ;	eliminated unneeded push/pop not_psw
+                                    474 ;	eliminated unneeded push/pop dpl
+                                    475 ;	eliminated unneeded push/pop dph
+                                    476 ;	eliminated unneeded push/pop b
+                                    477 ;	eliminated unneeded push/pop acc
+                                    478 ;------------------------------------------------------------
+                                    479 ;Allocation info for local variables in function 'delay'
+                                    480 ;------------------------------------------------------------
+                                    481 ;time          Allocated to registers 
+                                    482 ;------------------------------------------------------------
+                                    483 ;	.\stcboot.c:45: void delay(unsigned int time) {
+                                    484 ;	-----------------------------------------
+                                    485 ;	 function delay
+                                    486 ;	-----------------------------------------
+      000017                        487 _delay:
+                           000007   488 	ar7 = 0x07
+                           000006   489 	ar6 = 0x06
+                           000005   490 	ar5 = 0x05
+                           000004   491 	ar4 = 0x04
+                           000003   492 	ar3 = 0x03
+                           000002   493 	ar2 = 0x02
+                           000001   494 	ar1 = 0x01
+                           000000   495 	ar0 = 0x00
+      000017 AE 82            [24]  496 	mov	r6, dpl
+      000019 AF 83            [24]  497 	mov	r7, dph
+                                    498 ;	.\stcboot.c:46: while (time--);
+      00001B                        499 00101$:
+      00001B 8E 04            [24]  500 	mov	ar4,r6
+      00001D 8F 05            [24]  501 	mov	ar5,r7
+      00001F 1E               [12]  502 	dec	r6
+      000020 BE FF 01         [24]  503 	cjne	r6,#0xff,00113$
+      000023 1F               [12]  504 	dec	r7
+      000024                        505 00113$:
+      000024 EC               [12]  506 	mov	a,r4
+      000025 4D               [12]  507 	orl	a,r5
+      000026 70 F3            [24]  508 	jnz	00101$
+                                    509 ;	.\stcboot.c:47: }
+      000028 22               [24]  510 	ret
+                                    511 ;------------------------------------------------------------
+                                    512 ;Allocation info for local variables in function 'binary_count'
+                                    513 ;------------------------------------------------------------
+                                    514 ;count         Allocated to registers r6 r7 
+                                    515 ;------------------------------------------------------------
+                                    516 ;	.\stcboot.c:50: void binary_count(void) {
+                                    517 ;	-----------------------------------------
+                                    518 ;	 function binary_count
+                                    519 ;	-----------------------------------------
+      000029                        520 _binary_count:
+                                    521 ;	.\stcboot.c:52: do{
+      000029 7E 00            [12]  522 	mov	r6,#0x00
+      00002B 7F 00            [12]  523 	mov	r7,#0x00
+      00002D                        524 00103$:
+                                    525 ;	.\stcboot.c:53: P1 = ~count;  // Output inverted count to LEDs
+      00002D 8E 05            [24]  526 	mov	ar5,r6
+      00002F ED               [12]  527 	mov	a,r5
+      000030 F4               [12]  528 	cpl	a
+      000031 F5 90            [12]  529 	mov	_P1,a
+                                    530 ;	.\stcboot.c:54: delay(2000);
+      000033 90 07 D0         [24]  531 	mov	dptr,#0x07d0
+      000036 C0 07            [24]  532 	push	ar7
+      000038 C0 06            [24]  533 	push	ar6
+      00003A 12r00r17         [24]  534 	lcall	_delay
+      00003D D0 06            [24]  535 	pop	ar6
+      00003F D0 07            [24]  536 	pop	ar7
+                                    537 ;	.\stcboot.c:55: count++;
+      000041 0E               [12]  538 	inc	r6
+      000042 BE 00 01         [24]  539 	cjne	r6,#0x00,00120$
+      000045 0F               [12]  540 	inc	r7
+      000046                        541 00120$:
+                                    542 ;	.\stcboot.c:56: if ((P3 & 0x20) == 0){
+      000046 E5 B0            [12]  543 	mov	a,_P3
+      000048 20 E5 06         [24]  544 	jb	acc.5,00104$
+                                    545 ;	.\stcboot.c:57: delay(5000);
+      00004B 90 13 88         [24]  546 	mov	dptr,#0x1388
+                                    547 ;	.\stcboot.c:58: break;
+      00004E 02r00r17         [24]  548 	ljmp	_delay
+      000051                        549 00104$:
+                                    550 ;	.\stcboot.c:61: while (count < 256);
+      000051 74 FF            [12]  551 	mov	a,#0x100 - 0x01
+      000053 2F               [12]  552 	add	a,r7
+      000054 50 D7            [24]  553 	jnc	00103$
+                                    554 ;	.\stcboot.c:62: }
+      000056 22               [24]  555 	ret
+                                    556 ;------------------------------------------------------------
+                                    557 ;Allocation info for local variables in function 'cylon'
+                                    558 ;------------------------------------------------------------
+                                    559 ;pos           Allocated to registers r7 
+                                    560 ;direction     Allocated to registers r6 
+                                    561 ;------------------------------------------------------------
+                                    562 ;	.\stcboot.c:65: void cylon(void) {
+                                    563 ;	-----------------------------------------
+                                    564 ;	 function cylon
+                                    565 ;	-----------------------------------------
+      000057                        566 _cylon:
+                                    567 ;	.\stcboot.c:66: unsigned char pos = 1;
+      000057 7F 01            [12]  568 	mov	r7,#0x01
+                                    569 ;	.\stcboot.c:67: unsigned char direction = 1; // 1 for forward, 0 for reverse
+      000059 7E 01            [12]  570 	mov	r6,#0x01
+                                    571 ;	.\stcboot.c:69: while (1) {
+      00005B                        572 00111$:
+                                    573 ;	.\stcboot.c:70: if ((P3 & 0x20) == 0){
+      00005B E5 B0            [12]  574 	mov	a,_P3
+      00005D 20 E5 06         [24]  575 	jb	acc.5,00102$
+                                    576 ;	.\stcboot.c:71: delay(5000);
+      000060 90 13 88         [24]  577 	mov	dptr,#0x1388
+                                    578 ;	.\stcboot.c:72: break;
+      000063 02r00r17         [24]  579 	ljmp	_delay
+      000066                        580 00102$:
+                                    581 ;	.\stcboot.c:74: P1 = ~pos;  // Invert output to turn LEDs on
+      000066 EF               [12]  582 	mov	a,r7
+      000067 F4               [12]  583 	cpl	a
+      000068 F5 90            [12]  584 	mov	_P1,a
+                                    585 ;	.\stcboot.c:75: delay(5000);
+      00006A 90 13 88         [24]  586 	mov	dptr,#0x1388
+      00006D C0 07            [24]  587 	push	ar7
+      00006F C0 06            [24]  588 	push	ar6
+      000071 12r00r17         [24]  589 	lcall	_delay
+      000074 D0 06            [24]  590 	pop	ar6
+      000076 D0 07            [24]  591 	pop	ar7
+                                    592 ;	.\stcboot.c:77: if (direction) {
+      000078 EE               [12]  593 	mov	a,r6
+      000079 60 0A            [24]  594 	jz	00108$
+                                    595 ;	.\stcboot.c:78: pos <<= 1;
+      00007B EF               [12]  596 	mov	a,r7
+      00007C 2F               [12]  597 	add	a,r7
+      00007D FF               [12]  598 	mov	r7,a
+                                    599 ;	.\stcboot.c:79: if (pos == 0x80) direction = 0;
+      00007E BF 80 DA         [24]  600 	cjne	r7,#0x80,00111$
+      000081 7E 00            [12]  601 	mov	r6,#0x00
+      000083 80 D6            [24]  602 	sjmp	00111$
+      000085                        603 00108$:
+                                    604 ;	.\stcboot.c:81: pos >>= 1;
+      000085 EF               [12]  605 	mov	a,r7
+      000086 C3               [12]  606 	clr	c
+      000087 13               [12]  607 	rrc	a
+      000088 FF               [12]  608 	mov	r7,a
+                                    609 ;	.\stcboot.c:82: if (pos == 0x01) direction = 1;  // Reverse at the beginning
+      000089 BF 01 CF         [24]  610 	cjne	r7,#0x01,00111$
+      00008C 7E 01            [12]  611 	mov	r6,#0x01
+                                    612 ;	.\stcboot.c:86: }
+      00008E 80 CB            [24]  613 	sjmp	00111$
+                                    614 ;------------------------------------------------------------
+                                    615 ;Allocation info for local variables in function 'dual_cylon'
+                                    616 ;------------------------------------------------------------
+                                    617 ;pos1          Allocated to registers r7 
+                                    618 ;pos2          Allocated to registers r6 
                                     619 ;------------------------------------------------------------
-                                    620 ;	.\stcboot.c:75: void binary_count(void) {
+                                    620 ;	.\stcboot.c:90: void dual_cylon(void) {
                                     621 ;	-----------------------------------------
-                                    622 ;	 function binary_count
+                                    622 ;	 function dual_cylon
                                     623 ;	-----------------------------------------
-      0000CB                        624 _binary_count:
-                                    625 ;	.\stcboot.c:77: do{
-      0000CB 7E 00            [12]  626 	mov	r6,#0x00
-      0000CD 7F 00            [12]  627 	mov	r7,#0x00
-      0000CF                        628 00103$:
-                                    629 ;	.\stcboot.c:79: P1 = ~count;  // Output inverted count to LEDs
-      0000CF 8E 05            [24]  630 	mov	ar5,r6
-      0000D1 ED               [12]  631 	mov	a,r5
-      0000D2 F4               [12]  632 	cpl	a
-      0000D3 F5 90            [12]  633 	mov	_P1,a
-                                    634 ;	.\stcboot.c:81: delay(2000);
-      0000D5 90 07 D0         [24]  635 	mov	dptr,#0x07d0
-      0000D8 C0 07            [24]  636 	push	ar7
-      0000DA C0 06            [24]  637 	push	ar6
-      0000DC 12r00rB9         [24]  638 	lcall	_delay
-      0000DF D0 06            [24]  639 	pop	ar6
-      0000E1 D0 07            [24]  640 	pop	ar7
-                                    641 ;	.\stcboot.c:82: count++;
-      0000E3 0E               [12]  642 	inc	r6
-      0000E4 BE 00 01         [24]  643 	cjne	r6,#0x00,00120$
-      0000E7 0F               [12]  644 	inc	r7
-      0000E8                        645 00120$:
-                                    646 ;	.\stcboot.c:83: if ((P3 & 0x20) == 0){
-      0000E8 E5 B0            [12]  647 	mov	a,_P3
-      0000EA 20 E5 03         [24]  648 	jb	acc.5,00104$
-                                    649 ;	.\stcboot.c:84: Timer0_isr();
-                                    650 ;	.\stcboot.c:85: break;
-      0000ED 02r00r10         [24]  651 	ljmp	_Timer0_isr
-      0000F0                        652 00104$:
-                                    653 ;	.\stcboot.c:88: while (count < 256);
-      0000F0 74 FF            [12]  654 	mov	a,#0x100 - 0x01
-      0000F2 2F               [12]  655 	add	a,r7
-      0000F3 50 DA            [24]  656 	jnc	00103$
-                                    657 ;	.\stcboot.c:89: }
-      0000F5 22               [24]  658 	ret
-                                    659 ;------------------------------------------------------------
-                                    660 ;Allocation info for local variables in function 'cylon'
-                                    661 ;------------------------------------------------------------
-                                    662 ;pos           Allocated to registers r7 
-                                    663 ;direction     Allocated to registers r6 
-                                    664 ;------------------------------------------------------------
-                                    665 ;	.\stcboot.c:92: void cylon(void) {
-                                    666 ;	-----------------------------------------
-                                    667 ;	 function cylon
-                                    668 ;	-----------------------------------------
-      0000F6                        669 _cylon:
-                                    670 ;	.\stcboot.c:93: unsigned char pos = 1;
-      0000F6 7F 01            [12]  671 	mov	r7,#0x01
-                                    672 ;	.\stcboot.c:94: unsigned char direction = 1; // 1 for forward, 0 for reverse
-      0000F8 7E 01            [12]  673 	mov	r6,#0x01
-                                    674 ;	.\stcboot.c:96: while (1) {
-      0000FA                        675 00111$:
-                                    676 ;	.\stcboot.c:97: if ((P3 & 0x20) == 0){
-      0000FA E5 B0            [12]  677 	mov	a,_P3
-      0000FC 20 E5 03         [24]  678 	jb	acc.5,00102$
-                                    679 ;	.\stcboot.c:98: Timer0_isr();
-                                    680 ;	.\stcboot.c:99: break;
-      0000FF 02r00r10         [24]  681 	ljmp	_Timer0_isr
-      000102                        682 00102$:
-                                    683 ;	.\stcboot.c:101: P1 = ~pos;  // Invert output to turn LEDs on
-      000102 EF               [12]  684 	mov	a,r7
-      000103 F4               [12]  685 	cpl	a
-      000104 F5 90            [12]  686 	mov	_P1,a
-                                    687 ;	.\stcboot.c:102: delay(5000);
-      000106 90 13 88         [24]  688 	mov	dptr,#0x1388
-      000109 C0 07            [24]  689 	push	ar7
-      00010B C0 06            [24]  690 	push	ar6
-      00010D 12r00rB9         [24]  691 	lcall	_delay
-      000110 D0 06            [24]  692 	pop	ar6
-      000112 D0 07            [24]  693 	pop	ar7
-                                    694 ;	.\stcboot.c:104: if (direction) {
-      000114 EE               [12]  695 	mov	a,r6
-      000115 60 0A            [24]  696 	jz	00108$
-                                    697 ;	.\stcboot.c:105: pos <<= 1;
-      000117 EF               [12]  698 	mov	a,r7
-      000118 2F               [12]  699 	add	a,r7
-      000119 FF               [12]  700 	mov	r7,a
-                                    701 ;	.\stcboot.c:106: if (pos == 0x80) direction = 0;
-      00011A BF 80 DD         [24]  702 	cjne	r7,#0x80,00111$
-      00011D 7E 00            [12]  703 	mov	r6,#0x00
-      00011F 80 D9            [24]  704 	sjmp	00111$
-      000121                        705 00108$:
-                                    706 ;	.\stcboot.c:108: pos >>= 1;
-      000121 EF               [12]  707 	mov	a,r7
-      000122 C3               [12]  708 	clr	c
-      000123 13               [12]  709 	rrc	a
-      000124 FF               [12]  710 	mov	r7,a
-                                    711 ;	.\stcboot.c:109: if (pos == 0x01) direction = 1;  // Reverse at the beginning
-      000125 BF 01 D2         [24]  712 	cjne	r7,#0x01,00111$
-      000128 7E 01            [12]  713 	mov	r6,#0x01
-                                    714 ;	.\stcboot.c:113: }
-      00012A 80 CE            [24]  715 	sjmp	00111$
-                                    716 ;------------------------------------------------------------
-                                    717 ;Allocation info for local variables in function 'dual_cylon'
-                                    718 ;------------------------------------------------------------
-                                    719 ;pos1          Allocated to registers r7 
-                                    720 ;pos2          Allocated to registers r6 
-                                    721 ;------------------------------------------------------------
-                                    722 ;	.\stcboot.c:117: void dual_cylon(void) {
-                                    723 ;	-----------------------------------------
-                                    724 ;	 function dual_cylon
-                                    725 ;	-----------------------------------------
-      00012C                        726 _dual_cylon:
-                                    727 ;	.\stcboot.c:118: unsigned char pos1 = 1, pos2 = 0x80;
-      00012C 7F 01            [12]  728 	mov	r7,#0x01
-      00012E 7E 80            [12]  729 	mov	r6,#0x80
-                                    730 ;	.\stcboot.c:119: while (1) {
-      000130                        731 00106$:
-                                    732 ;	.\stcboot.c:120: if ((P3 & 0x20) == 0){
-      000130 E5 B0            [12]  733 	mov	a,_P3
-      000132 20 E5 06         [24]  734 	jb	acc.5,00102$
-                                    735 ;	.\stcboot.c:121: P1=0xFF;
-      000135 75 90 FF         [24]  736 	mov	_P1,#0xff
-                                    737 ;	.\stcboot.c:122: Timer0_isr();
-                                    738 ;	.\stcboot.c:123: break;
-      000138 02r00r10         [24]  739 	ljmp	_Timer0_isr
-      00013B                        740 00102$:
-                                    741 ;	.\stcboot.c:125: P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
-      00013B EE               [12]  742 	mov	a,r6
-      00013C 4F               [12]  743 	orl	a,r7
-      00013D F4               [12]  744 	cpl	a
-      00013E F5 90            [12]  745 	mov	_P1,a
-                                    746 ;	.\stcboot.c:126: delay(5000);
-      000140 90 13 88         [24]  747 	mov	dptr,#0x1388
-      000143 C0 07            [24]  748 	push	ar7
-      000145 C0 06            [24]  749 	push	ar6
-      000147 12r00rB9         [24]  750 	lcall	_delay
-      00014A D0 06            [24]  751 	pop	ar6
-      00014C D0 07            [24]  752 	pop	ar7
-                                    753 ;	.\stcboot.c:127: pos1 <<= 1;
-      00014E EF               [12]  754 	mov	a,r7
-      00014F 2F               [12]  755 	add	a,r7
-      000150 FF               [12]  756 	mov	r7,a
-                                    757 ;	.\stcboot.c:128: pos2 >>= 1;
-      000151 EE               [12]  758 	mov	a,r6
-      000152 C3               [12]  759 	clr	c
-      000153 13               [12]  760 	rrc	a
-      000154 FE               [12]  761 	mov	r6,a
-                                    762 ;	.\stcboot.c:129: if (pos1 == 0x80) {  // Reset condition
-      000155 BF 80 D8         [24]  763 	cjne	r7,#0x80,00106$
-                                    764 ;	.\stcboot.c:130: pos1 = 1;
-      000158 7F 01            [12]  765 	mov	r7,#0x01
-                                    766 ;	.\stcboot.c:131: pos2 = 0x80;
-      00015A 7E 80            [12]  767 	mov	r6,#0x80
-                                    768 ;	.\stcboot.c:134: }
-      00015C 80 D2            [24]  769 	sjmp	00106$
-                                    770 ;------------------------------------------------------------
-                                    771 ;Allocation info for local variables in function 'display_number'
-                                    772 ;------------------------------------------------------------
-                                    773 ;temp          Allocated to registers r6 r7 
-                                    774 ;ones          Allocated to registers r4 
-                                    775 ;tens          Allocated to registers r3 
-                                    776 ;hundreds      Allocated to registers r2 
-                                    777 ;thousands     Allocated to registers r6 
-                                    778 ;------------------------------------------------------------
-                                    779 ;	.\stcboot.c:137: void display_number(void) {
-                                    780 ;	-----------------------------------------
-                                    781 ;	 function display_number
-                                    782 ;	-----------------------------------------
-      00015E                        783 _display_number:
-                                    784 ;	.\stcboot.c:138: unsigned int temp = number;
-      00015E AE*00            [24]  785 	mov	r6,_number
-      000160 AF*01            [24]  786 	mov	r7,(_number + 1)
-                                    787 ;	.\stcboot.c:140: unsigned char ones = temp % 10;
-      000162 75*00 0A         [24]  788 	mov	__moduint_PARM_2,#0x0a
-      000165 75*01 00         [24]  789 	mov	(__moduint_PARM_2 + 1),#0x00
-      000168 8E 82            [24]  790 	mov	dpl, r6
-      00016A 8F 83            [24]  791 	mov	dph, r7
-      00016C C0 07            [24]  792 	push	ar7
-      00016E C0 06            [24]  793 	push	ar6
-      000170 12r00r00         [24]  794 	lcall	__moduint
-      000173 AC 82            [24]  795 	mov	r4, dpl
-      000175 D0 06            [24]  796 	pop	ar6
-      000177 D0 07            [24]  797 	pop	ar7
-                                    798 ;	.\stcboot.c:141: temp /= 10;
-      000179 75*00 0A         [24]  799 	mov	__divuint_PARM_2,#0x0a
-      00017C 75*01 00         [24]  800 	mov	(__divuint_PARM_2 + 1),#0x00
-                                    801 ;	.\stcboot.c:142: unsigned char tens = temp % 10;
-      00017F 8E 82            [24]  802 	mov	dpl, r6
-      000181 8F 83            [24]  803 	mov	dph, r7
-      000183 C0 04            [24]  804 	push	ar4
-      000185 12r00r00         [24]  805 	lcall	__divuint
-      000188 AE 82            [24]  806 	mov	r6, dpl
-      00018A AF 83            [24]  807 	mov	r7, dph
-      00018C D0 04            [24]  808 	pop	ar4
-      00018E 75*00 0A         [24]  809 	mov	__moduint_PARM_2,#0x0a
-      000191 75*01 00         [24]  810 	mov	(__moduint_PARM_2 + 1),#0x00
-      000194 8E 82            [24]  811 	mov	dpl, r6
-      000196 8F 83            [24]  812 	mov	dph, r7
-      000198 C0 07            [24]  813 	push	ar7
-      00019A C0 06            [24]  814 	push	ar6
-      00019C C0 04            [24]  815 	push	ar4
-      00019E 12r00r00         [24]  816 	lcall	__moduint
-      0001A1 AB 82            [24]  817 	mov	r3, dpl
-      0001A3 D0 04            [24]  818 	pop	ar4
-      0001A5 D0 06            [24]  819 	pop	ar6
-      0001A7 D0 07            [24]  820 	pop	ar7
-                                    821 ;	.\stcboot.c:143: temp /= 10;
-      0001A9 75*00 0A         [24]  822 	mov	__divuint_PARM_2,#0x0a
-      0001AC 75*01 00         [24]  823 	mov	(__divuint_PARM_2 + 1),#0x00
-                                    824 ;	.\stcboot.c:144: unsigned char hundreds = temp % 10;
-      0001AF 8E 82            [24]  825 	mov	dpl, r6
-      0001B1 8F 83            [24]  826 	mov	dph, r7
-      0001B3 C0 04            [24]  827 	push	ar4
-      0001B5 C0 03            [24]  828 	push	ar3
-      0001B7 12r00r00         [24]  829 	lcall	__divuint
-      0001BA AE 82            [24]  830 	mov	r6, dpl
-      0001BC AF 83            [24]  831 	mov	r7, dph
-      0001BE D0 03            [24]  832 	pop	ar3
-      0001C0 D0 04            [24]  833 	pop	ar4
-      0001C2 75*00 0A         [24]  834 	mov	__moduint_PARM_2,#0x0a
-      0001C5 75*01 00         [24]  835 	mov	(__moduint_PARM_2 + 1),#0x00
-      0001C8 8E 82            [24]  836 	mov	dpl, r6
-      0001CA 8F 83            [24]  837 	mov	dph, r7
-      0001CC C0 07            [24]  838 	push	ar7
-      0001CE C0 06            [24]  839 	push	ar6
-      0001D0 C0 04            [24]  840 	push	ar4
-      0001D2 C0 03            [24]  841 	push	ar3
-      0001D4 12r00r00         [24]  842 	lcall	__moduint
-      0001D7 AA 82            [24]  843 	mov	r2, dpl
-      0001D9 D0 03            [24]  844 	pop	ar3
-      0001DB D0 04            [24]  845 	pop	ar4
-      0001DD D0 06            [24]  846 	pop	ar6
-      0001DF D0 07            [24]  847 	pop	ar7
-                                    848 ;	.\stcboot.c:145: temp /= 10;
-      0001E1 75*00 0A         [24]  849 	mov	__divuint_PARM_2,#0x0a
-      0001E4 75*01 00         [24]  850 	mov	(__divuint_PARM_2 + 1),#0x00
-                                    851 ;	.\stcboot.c:146: unsigned char thousands = temp % 10;
-      0001E7 8E 82            [24]  852 	mov	dpl, r6
-      0001E9 8F 83            [24]  853 	mov	dph, r7
-      0001EB C0 04            [24]  854 	push	ar4
-      0001ED C0 03            [24]  855 	push	ar3
-      0001EF C0 02            [24]  856 	push	ar2
-      0001F1 12r00r00         [24]  857 	lcall	__divuint
-      0001F4 AE 82            [24]  858 	mov	r6, dpl
-      0001F6 75 F0 0A         [24]  859 	mov	b,#0x0a
-      0001F9 EE               [12]  860 	mov	a,r6
-      0001FA 84               [48]  861 	div	ab
-                                    862 ;	.\stcboot.c:148: P0 = seg_table[thousands];	P2_0 = 0;	delay(500);	P2_0 = 1;
-      0001FB E5 F0            [12]  863 	mov	a,b
-      0001FD 24r0E            [12]  864 	add	a, #_seg_table
-      0001FF F9               [12]  865 	mov	r1,a
-      000200 87 80            [24]  866 	mov	_P0,@r1
-                                    867 ;	assignBit
-      000202 C2 A0            [12]  868 	clr	_P2_0
-      000204 90 01 F4         [24]  869 	mov	dptr,#0x01f4
-      000207 12r00rB9         [24]  870 	lcall	_delay
-      00020A D0 02            [24]  871 	pop	ar2
-                                    872 ;	assignBit
-      00020C D2 A0            [12]  873 	setb	_P2_0
-                                    874 ;	.\stcboot.c:149: P0 = seg_table[hundreds];	P2_1 = 0;	delay(500);	P2_1 = 1;
-      00020E EA               [12]  875 	mov	a,r2
-      00020F 24r0E            [12]  876 	add	a, #_seg_table
-      000211 F9               [12]  877 	mov	r1,a
-      000212 87 80            [24]  878 	mov	_P0,@r1
-                                    879 ;	assignBit
-      000214 C2 A1            [12]  880 	clr	_P2_1
-      000216 90 01 F4         [24]  881 	mov	dptr,#0x01f4
-      000219 12r00rB9         [24]  882 	lcall	_delay
-      00021C D0 03            [24]  883 	pop	ar3
-                                    884 ;	assignBit
-      00021E D2 A1            [12]  885 	setb	_P2_1
-                                    886 ;	.\stcboot.c:150: P0 = seg_table[tens];		P2_2 = 0;	delay(500);	P2_2 = 1;
-      000220 EB               [12]  887 	mov	a,r3
-      000221 24r0E            [12]  888 	add	a, #_seg_table
-      000223 F9               [12]  889 	mov	r1,a
-      000224 87 80            [24]  890 	mov	_P0,@r1
-                                    891 ;	assignBit
-      000226 C2 A2            [12]  892 	clr	_P2_2
-      000228 90 01 F4         [24]  893 	mov	dptr,#0x01f4
-      00022B 12r00rB9         [24]  894 	lcall	_delay
-      00022E D0 04            [24]  895 	pop	ar4
-                                    896 ;	assignBit
-      000230 D2 A2            [12]  897 	setb	_P2_2
-                                    898 ;	.\stcboot.c:151: P0 = seg_table[ones];		P2_3 = 0;	delay(500);	P2_3 = 1;
-      000232 EC               [12]  899 	mov	a,r4
-      000233 24r0E            [12]  900 	add	a, #_seg_table
-      000235 F9               [12]  901 	mov	r1,a
-      000236 87 80            [24]  902 	mov	_P0,@r1
-                                    903 ;	assignBit
-      000238 C2 A3            [12]  904 	clr	_P2_3
-      00023A 90 01 F4         [24]  905 	mov	dptr,#0x01f4
-      00023D 12r00rB9         [24]  906 	lcall	_delay
-                                    907 ;	assignBit
-      000240 D2 A3            [12]  908 	setb	_P2_3
-                                    909 ;	.\stcboot.c:152: }
-      000242 22               [24]  910 	ret
-                                    911 ;------------------------------------------------------------
-                                    912 ;Allocation info for local variables in function 'number_clicker'
-                                    913 ;------------------------------------------------------------
-                                    914 ;	.\stcboot.c:155: void number_clicker(void) {
-                                    915 ;	-----------------------------------------
-                                    916 ;	 function number_clicker
-                                    917 ;	-----------------------------------------
-      000243                        918 _number_clicker:
-                                    919 ;	.\stcboot.c:156: while (1) {
-      000243                        920 00113$:
-                                    921 ;	.\stcboot.c:157: if ((P3 & 0x20) == 0){
-      000243 E5 B0            [12]  922 	mov	a,_P3
-      000245 20 E5 03         [24]  923 	jb	acc.5,00102$
-                                    924 ;	.\stcboot.c:158: Timer0_isr();
-                                    925 ;	.\stcboot.c:159: break;
-      000248 02r00r10         [24]  926 	ljmp	_Timer0_isr
-      00024B                        927 00102$:
-                                    928 ;	.\stcboot.c:161: display_number();
-      00024B 12r01r5E         [24]  929 	lcall	_display_number
-                                    930 ;	.\stcboot.c:162: if ((P3 & 0x08) == 0) { // Button Pressed
-      00024E E5 B0            [12]  931 	mov	a,_P3
-      000250 20 E3 1E         [24]  932 	jb	acc.3,00106$
-                                    933 ;	.\stcboot.c:163: delay(5000);
-      000253 90 13 88         [24]  934 	mov	dptr,#0x1388
-      000256 12r00rB9         [24]  935 	lcall	_delay
-                                    936 ;	.\stcboot.c:164: number++;
-      000259 05*00            [12]  937 	inc	_number
-      00025B E4               [12]  938 	clr	a
-      00025C B5*00 02         [24]  939 	cjne	a,_number,00155$
-      00025F 05*01            [12]  940 	inc	(_number + 1)
-      000261                        941 00155$:
-                                    942 ;	.\stcboot.c:165: if (number > 9999) number = 0; // Roll over to 0
-      000261 C3               [12]  943 	clr	c
-      000262 74 0F            [12]  944 	mov	a,#0x0f
-      000264 95*00            [12]  945 	subb	a,_number
-      000266 74 27            [12]  946 	mov	a,#0x27
-      000268 95*01            [12]  947 	subb	a,(_number + 1)
-      00026A 50 05            [24]  948 	jnc	00106$
-      00026C E4               [12]  949 	clr	a
-      00026D F5*00            [12]  950 	mov	_number,a
-      00026F F5*01            [12]  951 	mov	(_number + 1),a
-      000271                        952 00106$:
-                                    953 ;	.\stcboot.c:171: if ((P3 & 0x04) == 0) { // Button Pressed
-      000271 E5 B0            [12]  954 	mov	a,_P3
-      000273 20 E2 CD         [24]  955 	jb	acc.2,00113$
-                                    956 ;	.\stcboot.c:172: delay(5000);
-      000276 90 13 88         [24]  957 	mov	dptr,#0x1388
-      000279 12r00rB9         [24]  958 	lcall	_delay
-                                    959 ;	.\stcboot.c:173: if (number == 0) number = 9999; // Roll over to 9999
-      00027C E5*00            [12]  960 	mov	a,_number
-      00027E 45*01            [12]  961 	orl	a,(_number + 1)
-      000280 70 08            [24]  962 	jnz	00108$
-      000282 75*00 0F         [24]  963 	mov	_number,#0x0f
-      000285 75*01 27         [24]  964 	mov	(_number + 1),#0x27
-      000288 80 B9            [24]  965 	sjmp	00113$
-      00028A                        966 00108$:
-                                    967 ;	.\stcboot.c:174: else number--;
-      00028A 15*00            [12]  968 	dec	_number
-      00028C 74 FF            [12]  969 	mov	a,#0xff
-      00028E B5*00 02         [24]  970 	cjne	a,_number,00159$
-      000291 15*01            [12]  971 	dec	(_number + 1)
-      000293                        972 00159$:
-                                    973 ;	.\stcboot.c:177: }
-      000293 80 AE            [24]  974 	sjmp	00113$
-                                    975 ;------------------------------------------------------------
-                                    976 ;Allocation info for local variables in function 'main'
-                                    977 ;------------------------------------------------------------
-                                    978 ;	.\stcboot.c:179: void main(void) {
-                                    979 ;	-----------------------------------------
-                                    980 ;	 function main
-                                    981 ;	-----------------------------------------
-      000295                        982 _main:
-                                    983 ;	.\stcboot.c:180: Init_Timer0();
-      000295 12r00r00         [24]  984 	lcall	_Init_Timer0
-                                    985 ;	.\stcboot.c:181: while (1) {
-      000298                        986 00102$:
-                                    987 ;	.\stcboot.c:184: }
-      000298 80 FE            [24]  988 	sjmp	00102$
-                                    989 	.area CSEG    (CODE)
-                                    990 	.area CONST   (CODE)
-                                    991 	.area CONST   (CODE)
-      000000                        992 _period:
-      000000 E8 03 00 00            993 	.byte #0xe8, #0x03, #0x00, #0x00	; 1000
-                                    994 	.area CSEG    (CODE)
-                                    995 	.area XINIT   (CODE)
-                                    996 	.area CABS    (ABS,CODE)
+      000090                        624 _dual_cylon:
+                                    625 ;	.\stcboot.c:91: unsigned char pos1 = 1, pos2 = 0x80;
+      000090 7F 01            [12]  626 	mov	r7,#0x01
+      000092 7E 80            [12]  627 	mov	r6,#0x80
+                                    628 ;	.\stcboot.c:92: while (1) {
+      000094                        629 00106$:
+                                    630 ;	.\stcboot.c:93: if ((P3 & 0x20) == 0){
+      000094 E5 B0            [12]  631 	mov	a,_P3
+      000096 20 E5 09         [24]  632 	jb	acc.5,00102$
+                                    633 ;	.\stcboot.c:94: P1=0xFF;
+      000099 75 90 FF         [24]  634 	mov	_P1,#0xff
+                                    635 ;	.\stcboot.c:95: delay(5000);
+      00009C 90 13 88         [24]  636 	mov	dptr,#0x1388
+                                    637 ;	.\stcboot.c:96: break;
+      00009F 02r00r17         [24]  638 	ljmp	_delay
+      0000A2                        639 00102$:
+                                    640 ;	.\stcboot.c:98: P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
+      0000A2 EE               [12]  641 	mov	a,r6
+      0000A3 4F               [12]  642 	orl	a,r7
+      0000A4 F4               [12]  643 	cpl	a
+      0000A5 F5 90            [12]  644 	mov	_P1,a
+                                    645 ;	.\stcboot.c:99: delay(5000);
+      0000A7 90 13 88         [24]  646 	mov	dptr,#0x1388
+      0000AA C0 07            [24]  647 	push	ar7
+      0000AC C0 06            [24]  648 	push	ar6
+      0000AE 12r00r17         [24]  649 	lcall	_delay
+      0000B1 D0 06            [24]  650 	pop	ar6
+      0000B3 D0 07            [24]  651 	pop	ar7
+                                    652 ;	.\stcboot.c:100: pos1 <<= 1;
+      0000B5 EF               [12]  653 	mov	a,r7
+      0000B6 2F               [12]  654 	add	a,r7
+      0000B7 FF               [12]  655 	mov	r7,a
+                                    656 ;	.\stcboot.c:101: pos2 >>= 1;
+      0000B8 EE               [12]  657 	mov	a,r6
+      0000B9 C3               [12]  658 	clr	c
+      0000BA 13               [12]  659 	rrc	a
+      0000BB FE               [12]  660 	mov	r6,a
+                                    661 ;	.\stcboot.c:102: if (pos1 == 0x80) {  // Reset condition
+      0000BC BF 80 D5         [24]  662 	cjne	r7,#0x80,00106$
+                                    663 ;	.\stcboot.c:103: pos1 = 1;
+      0000BF 7F 01            [12]  664 	mov	r7,#0x01
+                                    665 ;	.\stcboot.c:104: pos2 = 0x80;
+      0000C1 7E 80            [12]  666 	mov	r6,#0x80
+                                    667 ;	.\stcboot.c:107: }
+      0000C3 80 CF            [24]  668 	sjmp	00106$
+                                    669 ;------------------------------------------------------------
+                                    670 ;Allocation info for local variables in function 'display_number'
+                                    671 ;------------------------------------------------------------
+                                    672 ;temp          Allocated to registers r6 r7 
+                                    673 ;ones          Allocated to registers r4 
+                                    674 ;tens          Allocated to registers r3 
+                                    675 ;hundreds      Allocated to registers r2 
+                                    676 ;thousands     Allocated to registers r6 
+                                    677 ;------------------------------------------------------------
+                                    678 ;	.\stcboot.c:110: void display_number(void) {
+                                    679 ;	-----------------------------------------
+                                    680 ;	 function display_number
+                                    681 ;	-----------------------------------------
+      0000C5                        682 _display_number:
+                                    683 ;	.\stcboot.c:111: unsigned int temp = number;
+      0000C5 AE*00            [24]  684 	mov	r6,_number
+      0000C7 AF*01            [24]  685 	mov	r7,(_number + 1)
+                                    686 ;	.\stcboot.c:113: unsigned char ones = temp % 10;
+      0000C9 75*00 0A         [24]  687 	mov	__moduint_PARM_2,#0x0a
+      0000CC 75*01 00         [24]  688 	mov	(__moduint_PARM_2 + 1),#0x00
+      0000CF 8E 82            [24]  689 	mov	dpl, r6
+      0000D1 8F 83            [24]  690 	mov	dph, r7
+      0000D3 C0 07            [24]  691 	push	ar7
+      0000D5 C0 06            [24]  692 	push	ar6
+      0000D7 12r00r00         [24]  693 	lcall	__moduint
+      0000DA AC 82            [24]  694 	mov	r4, dpl
+      0000DC D0 06            [24]  695 	pop	ar6
+      0000DE D0 07            [24]  696 	pop	ar7
+                                    697 ;	.\stcboot.c:114: temp /= 10;
+      0000E0 75*00 0A         [24]  698 	mov	__divuint_PARM_2,#0x0a
+      0000E3 75*01 00         [24]  699 	mov	(__divuint_PARM_2 + 1),#0x00
+                                    700 ;	.\stcboot.c:115: unsigned char tens = temp % 10;
+      0000E6 8E 82            [24]  701 	mov	dpl, r6
+      0000E8 8F 83            [24]  702 	mov	dph, r7
+      0000EA C0 04            [24]  703 	push	ar4
+      0000EC 12r00r00         [24]  704 	lcall	__divuint
+      0000EF AE 82            [24]  705 	mov	r6, dpl
+      0000F1 AF 83            [24]  706 	mov	r7, dph
+      0000F3 D0 04            [24]  707 	pop	ar4
+      0000F5 75*00 0A         [24]  708 	mov	__moduint_PARM_2,#0x0a
+      0000F8 75*01 00         [24]  709 	mov	(__moduint_PARM_2 + 1),#0x00
+      0000FB 8E 82            [24]  710 	mov	dpl, r6
+      0000FD 8F 83            [24]  711 	mov	dph, r7
+      0000FF C0 07            [24]  712 	push	ar7
+      000101 C0 06            [24]  713 	push	ar6
+      000103 C0 04            [24]  714 	push	ar4
+      000105 12r00r00         [24]  715 	lcall	__moduint
+      000108 AB 82            [24]  716 	mov	r3, dpl
+      00010A D0 04            [24]  717 	pop	ar4
+      00010C D0 06            [24]  718 	pop	ar6
+      00010E D0 07            [24]  719 	pop	ar7
+                                    720 ;	.\stcboot.c:116: temp /= 10;
+      000110 75*00 0A         [24]  721 	mov	__divuint_PARM_2,#0x0a
+      000113 75*01 00         [24]  722 	mov	(__divuint_PARM_2 + 1),#0x00
+                                    723 ;	.\stcboot.c:117: unsigned char hundreds = temp % 10;
+      000116 8E 82            [24]  724 	mov	dpl, r6
+      000118 8F 83            [24]  725 	mov	dph, r7
+      00011A C0 04            [24]  726 	push	ar4
+      00011C C0 03            [24]  727 	push	ar3
+      00011E 12r00r00         [24]  728 	lcall	__divuint
+      000121 AE 82            [24]  729 	mov	r6, dpl
+      000123 AF 83            [24]  730 	mov	r7, dph
+      000125 D0 03            [24]  731 	pop	ar3
+      000127 D0 04            [24]  732 	pop	ar4
+      000129 75*00 0A         [24]  733 	mov	__moduint_PARM_2,#0x0a
+      00012C 75*01 00         [24]  734 	mov	(__moduint_PARM_2 + 1),#0x00
+      00012F 8E 82            [24]  735 	mov	dpl, r6
+      000131 8F 83            [24]  736 	mov	dph, r7
+      000133 C0 07            [24]  737 	push	ar7
+      000135 C0 06            [24]  738 	push	ar6
+      000137 C0 04            [24]  739 	push	ar4
+      000139 C0 03            [24]  740 	push	ar3
+      00013B 12r00r00         [24]  741 	lcall	__moduint
+      00013E AA 82            [24]  742 	mov	r2, dpl
+      000140 D0 03            [24]  743 	pop	ar3
+      000142 D0 04            [24]  744 	pop	ar4
+      000144 D0 06            [24]  745 	pop	ar6
+      000146 D0 07            [24]  746 	pop	ar7
+                                    747 ;	.\stcboot.c:118: temp /= 10;
+      000148 75*00 0A         [24]  748 	mov	__divuint_PARM_2,#0x0a
+      00014B 75*01 00         [24]  749 	mov	(__divuint_PARM_2 + 1),#0x00
+                                    750 ;	.\stcboot.c:119: unsigned char thousands = temp % 10;
+      00014E 8E 82            [24]  751 	mov	dpl, r6
+      000150 8F 83            [24]  752 	mov	dph, r7
+      000152 C0 04            [24]  753 	push	ar4
+      000154 C0 03            [24]  754 	push	ar3
+      000156 C0 02            [24]  755 	push	ar2
+      000158 12r00r00         [24]  756 	lcall	__divuint
+      00015B AE 82            [24]  757 	mov	r6, dpl
+      00015D 75 F0 0A         [24]  758 	mov	b,#0x0a
+      000160 EE               [12]  759 	mov	a,r6
+      000161 84               [48]  760 	div	ab
+                                    761 ;	.\stcboot.c:121: P0 = seg_table[thousands];	P2_0 = 0;	delay(500);	P2_0 = 1;
+      000162 E5 F0            [12]  762 	mov	a,b
+      000164 24r0E            [12]  763 	add	a, #_seg_table
+      000166 F9               [12]  764 	mov	r1,a
+      000167 87 80            [24]  765 	mov	_P0,@r1
+                                    766 ;	assignBit
+      000169 C2 A0            [12]  767 	clr	_P2_0
+      00016B 90 01 F4         [24]  768 	mov	dptr,#0x01f4
+      00016E 12r00r17         [24]  769 	lcall	_delay
+      000171 D0 02            [24]  770 	pop	ar2
+                                    771 ;	assignBit
+      000173 D2 A0            [12]  772 	setb	_P2_0
+                                    773 ;	.\stcboot.c:122: P0 = seg_table[hundreds];	P2_1 = 0;	delay(500);	P2_1 = 1;
+      000175 EA               [12]  774 	mov	a,r2
+      000176 24r0E            [12]  775 	add	a, #_seg_table
+      000178 F9               [12]  776 	mov	r1,a
+      000179 87 80            [24]  777 	mov	_P0,@r1
+                                    778 ;	assignBit
+      00017B C2 A1            [12]  779 	clr	_P2_1
+      00017D 90 01 F4         [24]  780 	mov	dptr,#0x01f4
+      000180 12r00r17         [24]  781 	lcall	_delay
+      000183 D0 03            [24]  782 	pop	ar3
+                                    783 ;	assignBit
+      000185 D2 A1            [12]  784 	setb	_P2_1
+                                    785 ;	.\stcboot.c:123: P0 = seg_table[tens];		P2_2 = 0;	delay(500);	P2_2 = 1;
+      000187 EB               [12]  786 	mov	a,r3
+      000188 24r0E            [12]  787 	add	a, #_seg_table
+      00018A F9               [12]  788 	mov	r1,a
+      00018B 87 80            [24]  789 	mov	_P0,@r1
+                                    790 ;	assignBit
+      00018D C2 A2            [12]  791 	clr	_P2_2
+      00018F 90 01 F4         [24]  792 	mov	dptr,#0x01f4
+      000192 12r00r17         [24]  793 	lcall	_delay
+      000195 D0 04            [24]  794 	pop	ar4
+                                    795 ;	assignBit
+      000197 D2 A2            [12]  796 	setb	_P2_2
+                                    797 ;	.\stcboot.c:124: P0 = seg_table[ones];		P2_3 = 0;	delay(500);	P2_3 = 1;
+      000199 EC               [12]  798 	mov	a,r4
+      00019A 24r0E            [12]  799 	add	a, #_seg_table
+      00019C F9               [12]  800 	mov	r1,a
+      00019D 87 80            [24]  801 	mov	_P0,@r1
+                                    802 ;	assignBit
+      00019F C2 A3            [12]  803 	clr	_P2_3
+      0001A1 90 01 F4         [24]  804 	mov	dptr,#0x01f4
+      0001A4 12r00r17         [24]  805 	lcall	_delay
+                                    806 ;	assignBit
+      0001A7 D2 A3            [12]  807 	setb	_P2_3
+                                    808 ;	.\stcboot.c:125: }
+      0001A9 22               [24]  809 	ret
+                                    810 ;------------------------------------------------------------
+                                    811 ;Allocation info for local variables in function 'number_clicker'
+                                    812 ;------------------------------------------------------------
+                                    813 ;	.\stcboot.c:128: void number_clicker(void) {
+                                    814 ;	-----------------------------------------
+                                    815 ;	 function number_clicker
+                                    816 ;	-----------------------------------------
+      0001AA                        817 _number_clicker:
+                                    818 ;	.\stcboot.c:129: while (1) {
+      0001AA                        819 00113$:
+                                    820 ;	.\stcboot.c:130: if ((P3 & 0x20) == 0){
+      0001AA E5 B0            [12]  821 	mov	a,_P3
+      0001AC 20 E5 06         [24]  822 	jb	acc.5,00102$
+                                    823 ;	.\stcboot.c:131: delay(5000);
+      0001AF 90 13 88         [24]  824 	mov	dptr,#0x1388
+                                    825 ;	.\stcboot.c:132: break;
+      0001B2 02r00r17         [24]  826 	ljmp	_delay
+      0001B5                        827 00102$:
+                                    828 ;	.\stcboot.c:134: display_number();
+      0001B5 12r00rC5         [24]  829 	lcall	_display_number
+                                    830 ;	.\stcboot.c:135: if ((P3 & 0x08) == 0) { // Button Pressed
+      0001B8 E5 B0            [12]  831 	mov	a,_P3
+      0001BA 20 E3 1E         [24]  832 	jb	acc.3,00106$
+                                    833 ;	.\stcboot.c:136: delay(5000);
+      0001BD 90 13 88         [24]  834 	mov	dptr,#0x1388
+      0001C0 12r00r17         [24]  835 	lcall	_delay
+                                    836 ;	.\stcboot.c:137: number++;
+      0001C3 05*00            [12]  837 	inc	_number
+      0001C5 E4               [12]  838 	clr	a
+      0001C6 B5*00 02         [24]  839 	cjne	a,_number,00155$
+      0001C9 05*01            [12]  840 	inc	(_number + 1)
+      0001CB                        841 00155$:
+                                    842 ;	.\stcboot.c:138: if (number > 9999) number = 0; // Roll over to 0
+      0001CB C3               [12]  843 	clr	c
+      0001CC 74 0F            [12]  844 	mov	a,#0x0f
+      0001CE 95*00            [12]  845 	subb	a,_number
+      0001D0 74 27            [12]  846 	mov	a,#0x27
+      0001D2 95*01            [12]  847 	subb	a,(_number + 1)
+      0001D4 50 05            [24]  848 	jnc	00106$
+      0001D6 E4               [12]  849 	clr	a
+      0001D7 F5*00            [12]  850 	mov	_number,a
+      0001D9 F5*01            [12]  851 	mov	(_number + 1),a
+      0001DB                        852 00106$:
+                                    853 ;	.\stcboot.c:144: if ((P3 & 0x04) == 0) { // Button Pressed
+      0001DB E5 B0            [12]  854 	mov	a,_P3
+      0001DD 20 E2 CA         [24]  855 	jb	acc.2,00113$
+                                    856 ;	.\stcboot.c:145: delay(5000);
+      0001E0 90 13 88         [24]  857 	mov	dptr,#0x1388
+      0001E3 12r00r17         [24]  858 	lcall	_delay
+                                    859 ;	.\stcboot.c:146: if (number == 0) number = 9999; // Roll over to 9999
+      0001E6 E5*00            [12]  860 	mov	a,_number
+      0001E8 45*01            [12]  861 	orl	a,(_number + 1)
+      0001EA 70 08            [24]  862 	jnz	00108$
+      0001EC 75*00 0F         [24]  863 	mov	_number,#0x0f
+      0001EF 75*01 27         [24]  864 	mov	(_number + 1),#0x27
+      0001F2 80 B6            [24]  865 	sjmp	00113$
+      0001F4                        866 00108$:
+                                    867 ;	.\stcboot.c:147: else number--;
+      0001F4 15*00            [12]  868 	dec	_number
+      0001F6 74 FF            [12]  869 	mov	a,#0xff
+      0001F8 B5*00 02         [24]  870 	cjne	a,_number,00159$
+      0001FB 15*01            [12]  871 	dec	(_number + 1)
+      0001FD                        872 00159$:
+                                    873 ;	.\stcboot.c:150: }
+      0001FD 80 AB            [24]  874 	sjmp	00113$
+                                    875 ;------------------------------------------------------------
+                                    876 ;Allocation info for local variables in function 'main'
+                                    877 ;------------------------------------------------------------
+                                    878 ;	.\stcboot.c:152: void main(void) {
+                                    879 ;	-----------------------------------------
+                                    880 ;	 function main
+                                    881 ;	-----------------------------------------
+      0001FF                        882 _main:
+                                    883 ;	.\stcboot.c:153: while (1) {
+      0001FF                        884 00112$:
+                                    885 ;	.\stcboot.c:154: if ((P3 & 0x20) == 0) {
+      0001FF E5 B0            [12]  886 	mov	a,_P3
+      000201 FF               [12]  887 	mov	r7,a
+      000202 20 E5 18         [24]  888 	jb	acc.5,00104$
+                                    889 ;	.\stcboot.c:155: buttonIndex++;
+      000205 05*0C            [12]  890 	inc	_buttonIndex
+      000207 E4               [12]  891 	clr	a
+      000208 B5*0C 02         [24]  892 	cjne	a,_buttonIndex,00141$
+      00020B 05*0D            [12]  893 	inc	(_buttonIndex + 1)
+      00020D                        894 00141$:
+                                    895 ;	.\stcboot.c:156: if (buttonIndex > 5)
+      00020D C3               [12]  896 	clr	c
+      00020E 74 05            [12]  897 	mov	a,#0x05
+      000210 95*0C            [12]  898 	subb	a,_buttonIndex
+      000212 E4               [12]  899 	clr	a
+      000213 95*0D            [12]  900 	subb	a,(_buttonIndex + 1)
+      000215 50 06            [24]  901 	jnc	00104$
+                                    902 ;	.\stcboot.c:157: buttonIndex = 1;
+      000217 75*0C 01         [24]  903 	mov	_buttonIndex,#0x01
+      00021A 75*0D 00         [24]  904 	mov	(_buttonIndex + 1),#0x00
+      00021D                        905 00104$:
+                                    906 ;	.\stcboot.c:159: switch(buttonIndex) {
+      00021D C3               [12]  907 	clr	c
+      00021E 74 04            [12]  908 	mov	a,#0x04
+      000220 95*0C            [12]  909 	subb	a,_buttonIndex
+      000222 E4               [12]  910 	clr	a
+      000223 95*0D            [12]  911 	subb	a,(_buttonIndex + 1)
+      000225 40 D8            [24]  912 	jc	00112$
+      000227 E5*0C            [12]  913 	mov	a,_buttonIndex
+      000229 75 F0 03         [24]  914 	mov	b,#0x03
+      00022C A4               [48]  915 	mul	ab
+      00022D 90r02r31         [24]  916 	mov	dptr,#00144$
+      000230 73               [24]  917 	jmp	@a+dptr
+      000231                        918 00144$:
+      000231 02r01rFF         [24]  919 	ljmp	00112$
+      000234 02r02r40         [24]  920 	ljmp	00105$
+      000237 02r02r45         [24]  921 	ljmp	00106$
+      00023A 02r02r4A         [24]  922 	ljmp	00107$
+      00023D 02r02r4F         [24]  923 	ljmp	00108$
+                                    924 ;	.\stcboot.c:160: case 1:
+      000240                        925 00105$:
+                                    926 ;	.\stcboot.c:161: binary_count();
+      000240 12r00r29         [24]  927 	lcall	_binary_count
+                                    928 ;	.\stcboot.c:162: break;
+                                    929 ;	.\stcboot.c:163: case 2:
+      000243 80 BA            [24]  930 	sjmp	00112$
+      000245                        931 00106$:
+                                    932 ;	.\stcboot.c:164: cylon();
+      000245 12r00r57         [24]  933 	lcall	_cylon
+                                    934 ;	.\stcboot.c:165: break;
+                                    935 ;	.\stcboot.c:166: case 3:
+      000248 80 B5            [24]  936 	sjmp	00112$
+      00024A                        937 00107$:
+                                    938 ;	.\stcboot.c:167: dual_cylon();
+      00024A 12r00r90         [24]  939 	lcall	_dual_cylon
+                                    940 ;	.\stcboot.c:168: break;
+                                    941 ;	.\stcboot.c:169: case 4:
+      00024D 80 B0            [24]  942 	sjmp	00112$
+      00024F                        943 00108$:
+                                    944 ;	.\stcboot.c:170: number_clicker();
+      00024F 12r01rAA         [24]  945 	lcall	_number_clicker
+                                    946 ;	.\stcboot.c:171: break;
+                                    947 ;	.\stcboot.c:174: }
+                                    948 ;	.\stcboot.c:176: }
+      000252 80 AB            [24]  949 	sjmp	00112$
+                                    950 	.area CSEG    (CODE)
+                                    951 	.area CONST   (CODE)
+                                    952 	.area CONST   (CODE)
+      000000                        953 _period:
+      000000 E8 03 00 00            954 	.byte #0xe8, #0x03, #0x00, #0x00	; 1000
+                                    955 	.area CSEG    (CODE)
+                                    956 	.area XINIT   (CODE)
+                                    957 	.area CABS    (ABS,CODE)

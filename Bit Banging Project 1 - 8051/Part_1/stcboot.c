@@ -25,10 +25,9 @@ unsigned char seg_table[] = {
 // Timer funciton
 void Init_Timer0(void)
 {
-	// TMOD |= 0x00;		// mode 1, 16-bit timer
 	TMOD |= 0x01;		// mode 1, 16-bit timer
-	TH0 = 0x00;		// overflow at 65536
-	TL0 = 0x00;
+	TH0 = 0xFC;		// overflow at 65536
+	TL0 = 0x18;
 	EA = 1;			// enable global interrupts
 	ET0 = 1;		// enable timer0 interrupt
 	TR0 = 1;		// timer on
@@ -36,11 +35,9 @@ void Init_Timer0(void)
 
 void Timer0_isr(void) __interrupt(1) __using(1)
 {
-	TH0 = 0x00;		// reload
-	TL0 = 0x00;
-    buttonIndex++;
-    if (buttonIndex > 5)
-		buttonIndex = 1;
+	TH0 = 0xFC;		// overflow at 65536
+	TL0 = 0x18;
+	// P1=~P1;
 }
 
 
@@ -49,24 +46,15 @@ void delay(unsigned int time) {
     while (time--);
 }
 
-// void toggler(void){
-// 	if ((P3 & 0x20) == 0){
-// 		delay(5000);
-// 		// break;
-// 	}
-// }
-
 // Binary count from 0-255
 void binary_count(void) {
     unsigned int count = 0;
     do{
-        // startmillis = millis();
         P1 = ~count;  // Output inverted count to LEDs
-        // if (currentmillis - startmillis >= period)
         delay(2000);
         count++;
 		if ((P3 & 0x20) == 0){
-            Timer0_isr();
+			delay(5000);
 			break;
 		}
     }
@@ -80,7 +68,7 @@ void cylon(void) {
 
     while (1) {
 		if ((P3 & 0x20) == 0){
-            Timer0_isr();
+			delay(5000);
 			break;
 		}
         P1 = ~pos;  // Invert output to turn LEDs on
@@ -103,8 +91,8 @@ void dual_cylon(void) {
     unsigned char pos1 = 1, pos2 = 0x80;
     while (1) {
 		if ((P3 & 0x20) == 0){
-            P1=0xFF;
-            Timer0_isr();
+			P1=0xFF;
+			delay(5000);
 			break;
 		}
         P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
@@ -140,7 +128,7 @@ void display_number(void) {
 void number_clicker(void) {
     while (1) {
 		if ((P3 & 0x20) == 0){
-			Timer0_isr();
+			delay(5000);
 			break;
 		}
 		display_number();
@@ -152,7 +140,7 @@ void number_clicker(void) {
 //            }
         }
 
-        // Decrement Number (S4 - P3.2)
+        // Decrement Number (S4)
         if ((P3 & 0x04) == 0) { // Button Pressed
             delay(5000);
             if (number == 0) number = 9999; // Roll over to 9999
@@ -162,24 +150,27 @@ void number_clicker(void) {
 }
 
 void main(void) {
-    Init_Timer0();
     while (1) {
-       
-    switch(buttonIndex) {
-        case 1:
-            binary_count();
-            break;
-        case 2:
-            cylon();
-            break;
-        case 3:
-            dual_cylon();
-            break;
-        case 4:
-            number_clicker();
-            break;
-        default:
-            break;
-    }	
+		if ((P3 & 0x20) == 0) {
+			buttonIndex++;
+			if (buttonIndex > 5)
+				buttonIndex = 1;
+		}
+		switch(buttonIndex) {
+			case 1:
+				binary_count();
+				break;
+			case 2:
+				cylon();
+				break;
+			case 3:
+				dual_cylon();
+				break;
+			case 4:
+				number_clicker();
+				break;
+			default:
+				break;
+		}
     }
 }
