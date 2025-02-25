@@ -10,6 +10,8 @@
 ;--------------------------------------------------------
 	.globl _period
 	.globl _main
+	.globl _Timer0_isr
+	.globl _Init_Timer0
 	.globl _CY
 	.globl _AC
 	.globl _F0
@@ -107,6 +109,7 @@
 	.globl _SP
 	.globl _P0
 	.globl _seg_table
+	.globl _buttonIndex
 	.globl _currentmillis
 	.globl _startmillis
 	.globl _switchCount
@@ -228,6 +231,22 @@ _CY	=	0x00d7
 ;--------------------------------------------------------
 	.area REG_BANK_0	(REL,OVR,DATA)
 	.ds 8
+	.area REG_BANK_1	(REL,OVR,DATA)
+	.ds 8
+;--------------------------------------------------------
+; overlayable bit register bank
+;--------------------------------------------------------
+	.area BIT_BANK	(REL,OVR,DATA)
+bits:
+	.ds 1
+	b0 = bits[0]
+	b1 = bits[1]
+	b2 = bits[2]
+	b3 = bits[3]
+	b4 = bits[4]
+	b5 = bits[5]
+	b6 = bits[6]
+	b7 = bits[7]
 ;--------------------------------------------------------
 ; internal ram data
 ;--------------------------------------------------------
@@ -240,6 +259,8 @@ _startmillis::
 	.ds 4
 _currentmillis::
 	.ds 4
+_buttonIndex::
+	.ds 2
 _seg_table::
 	.ds 10
 ;--------------------------------------------------------
@@ -298,8 +319,11 @@ __start__stack:
 	.area HOME    (CODE)
 __interrupt_vect:
 	ljmp	__sdcc_gsinit_startup
+	reti
+	.ds	7
+	ljmp	_Timer0_isr
 ; restartable atomic support routines
-	.ds	5
+	.ds	2
 sdcc_atomic_exchange_rollback_start::
 	nop
 	nop
@@ -369,14 +393,17 @@ sdcc_atomic_compare_exchange_gptr_impl::
 	.globl __mcs51_genXINIT
 	.globl __mcs51_genXRAMCLEAR
 	.globl __mcs51_genRAMCLEAR
-;	.\stcboot.c:12: unsigned int number = 0;
+;	.\stcboot.c:14: unsigned int number = 0;
 	clr	a
 	mov	_number,a
 	mov	(_number + 1),a
-;	.\stcboot.c:13: unsigned int switchCount = 0;
+;	.\stcboot.c:15: unsigned int switchCount = 0;
 	mov	_switchCount,a
 	mov	(_switchCount + 1),a
-;	.\stcboot.c:19: unsigned char seg_table[] = {
+;	.\stcboot.c:18: unsigned int buttonIndex = 0;
+	mov	_buttonIndex,a
+	mov	(_buttonIndex + 1),a
+;	.\stcboot.c:21: unsigned char seg_table[] = {
 	mov	_seg_table,#0xc0
 	mov	(_seg_table + 0x0001),#0xf9
 	mov	(_seg_table + 0x0002),#0xa4
@@ -402,11 +429,162 @@ __sdcc_program_startup:
 ;--------------------------------------------------------
 	.area CSEG    (CODE)
 ;------------------------------------------------------------
+;Allocation info for local variables in function 'Init_Timer0'
+;------------------------------------------------------------
+;	.\stcboot.c:26: void Init_Timer0(void)
+;	-----------------------------------------
+;	 function Init_Timer0
+;	-----------------------------------------
+_Init_Timer0:
+	ar7 = 0x07
+	ar6 = 0x06
+	ar5 = 0x05
+	ar4 = 0x04
+	ar3 = 0x03
+	ar2 = 0x02
+	ar1 = 0x01
+	ar0 = 0x00
+;	.\stcboot.c:28: TMOD |= 0x01;		// mode 1, 16-bit timer
+	orl	_TMOD,#0x01
+;	.\stcboot.c:29: TH0 = 0xFC;		// overflow at 65536
+	mov	_TH0,#0xfc
+;	.\stcboot.c:30: TL0 = 0x18;
+	mov	_TL0,#0x18
+;	.\stcboot.c:31: EA = 1;			// enable global interrupts
+;	assignBit
+	setb	_EA
+;	.\stcboot.c:32: ET0 = 1;		// enable timer0 interrupt
+;	assignBit
+	setb	_ET0
+;	.\stcboot.c:33: TR0 = 1;		// timer on
+;	assignBit
+	setb	_TR0
+;	.\stcboot.c:34: }
+	ret
+;------------------------------------------------------------
+;Allocation info for local variables in function 'Timer0_isr'
+;------------------------------------------------------------
+;	.\stcboot.c:36: void Timer0_isr(void) __interrupt(1) __using(1)
+;	-----------------------------------------
+;	 function Timer0_isr
+;	-----------------------------------------
+_Timer0_isr:
+	ar7 = 0x0f
+	ar6 = 0x0e
+	ar5 = 0x0d
+	ar4 = 0x0c
+	ar3 = 0x0b
+	ar2 = 0x0a
+	ar1 = 0x09
+	ar0 = 0x08
+	push	bits
+	push	acc
+	push	b
+	push	dpl
+	push	dph
+	push	(0+7)
+	push	(0+6)
+	push	(0+5)
+	push	(0+4)
+	push	(0+3)
+	push	(0+2)
+	push	(0+1)
+	push	(0+0)
+	push	psw
+	mov	psw,#0x08
+;	.\stcboot.c:38: TH0 = 0xFC;		// reload
+	mov	_TH0,#0xfc
+;	.\stcboot.c:39: TL0 = 0x18;
+	mov	_TL0,#0x18
+;	.\stcboot.c:40: buttonIndex++;
+	inc	_buttonIndex
+	clr	a
+	cjne	a,_buttonIndex,00123$
+	inc	(_buttonIndex + 1)
+00123$:
+;	.\stcboot.c:41: if (buttonIndex > 5)
+	clr	c
+	mov	a,#0x05
+	subb	a,_buttonIndex
+	clr	a
+	subb	a,(_buttonIndex + 1)
+	jnc	00102$
+;	.\stcboot.c:42: buttonIndex = 1;
+	mov	_buttonIndex,#0x01
+	mov	(_buttonIndex + 1),#0x00
+00102$:
+;	.\stcboot.c:43: switch(buttonIndex) {
+	clr	c
+	mov	a,#0x04
+	subb	a,_buttonIndex
+	clr	a
+	subb	a,(_buttonIndex + 1)
+	jc	00109$
+	mov	a,_buttonIndex
+	mov	b,#0x03
+	mul	ab
+	mov	dptr,#00126$
+	jmp	@a+dptr
+00126$:
+	ljmp	00109$
+	ljmp	00103$
+	ljmp	00104$
+	ljmp	00105$
+	ljmp	00106$
+;	.\stcboot.c:44: case 1:
+00103$:
+;	.\stcboot.c:45: binary_count();
+	mov	psw,#0x00
+	lcall	_binary_count
+	mov	psw,#0x08
+;	.\stcboot.c:46: break;
+;	.\stcboot.c:47: case 2:
+	sjmp	00109$
+00104$:
+;	.\stcboot.c:48: cylon();
+	mov	psw,#0x00
+	lcall	_cylon
+	mov	psw,#0x08
+;	.\stcboot.c:49: break;
+;	.\stcboot.c:50: case 3:
+	sjmp	00109$
+00105$:
+;	.\stcboot.c:51: dual_cylon();
+	mov	psw,#0x00
+	lcall	_dual_cylon
+	mov	psw,#0x08
+;	.\stcboot.c:52: break;
+;	.\stcboot.c:53: case 4:
+	sjmp	00109$
+00106$:
+;	.\stcboot.c:54: number_clicker();
+	mov	psw,#0x00
+	lcall	_number_clicker
+	mov	psw,#0x08
+;	.\stcboot.c:58: }
+00109$:
+;	.\stcboot.c:59: }
+	pop	psw
+	pop	(0+0)
+	pop	(0+1)
+	pop	(0+2)
+	pop	(0+3)
+	pop	(0+4)
+	pop	(0+5)
+	pop	(0+6)
+	pop	(0+7)
+	pop	dph
+	pop	dpl
+	pop	b
+	pop	acc
+	pop	bits
+	ljmp	sdcc_atomic_maybe_rollback
+;------------------------------------------------------------
 ;Allocation info for local variables in function 'delay'
 ;------------------------------------------------------------
 ;time          Allocated to registers 
 ;------------------------------------------------------------
-;	.\stcboot.c:24: void delay(unsigned int time) {
+;	.\stcboot.c:63: void delay(unsigned int time) {
 ;	-----------------------------------------
 ;	 function delay
 ;	-----------------------------------------
@@ -421,7 +599,7 @@ _delay:
 	ar0 = 0x00
 	mov	r6, dpl
 	mov	r7, dph
-;	.\stcboot.c:25: while (time--);
+;	.\stcboot.c:64: while (time--);
 00101$:
 	mov	ar4,r6
 	mov	ar5,r7
@@ -432,123 +610,163 @@ _delay:
 	mov	a,r4
 	orl	a,r5
 	jnz	00101$
-;	.\stcboot.c:26: }
+;	.\stcboot.c:65: }
 	ret
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'binary_count'
 ;------------------------------------------------------------
 ;count         Allocated to registers r6 r7 
 ;------------------------------------------------------------
-;	.\stcboot.c:29: void binary_count(void) {
+;	.\stcboot.c:75: void binary_count(void) {
 ;	-----------------------------------------
 ;	 function binary_count
 ;	-----------------------------------------
 _binary_count:
-;	.\stcboot.c:31: do{
+;	.\stcboot.c:77: do{
 	mov	r6,#0x00
 	mov	r7,#0x00
-00101$:
-;	.\stcboot.c:33: P1 = ~count;  // Output inverted count to LEDs
+00103$:
+;	.\stcboot.c:79: P1 = ~count;  // Output inverted count to LEDs
 	mov	ar5,r6
 	mov	a,r5
 	cpl	a
 	mov	_P1,a
-;	.\stcboot.c:35: delay(5000);
+;	.\stcboot.c:81: delay(2000);
+	mov	dptr,#0x07d0
+	push	ar7
+	push	ar6
+	lcall	_delay
+	pop	ar6
+	pop	ar7
+;	.\stcboot.c:82: count++;
+	inc	r6
+	cjne	r6,#0x00,00120$
+	inc	r7
+00120$:
+;	.\stcboot.c:83: if ((P3 & 0x20) == 0){
+	mov	a,_P3
+	jb	acc.5,00104$
+;	.\stcboot.c:84: Timer0_isr();
+;	.\stcboot.c:85: break;
+	ljmp	_Timer0_isr
+00104$:
+;	.\stcboot.c:88: while (count < 256);
+	mov	a,#0x100 - 0x01
+	add	a,r7
+	jnc	00103$
+;	.\stcboot.c:89: }
+	ret
+;------------------------------------------------------------
+;Allocation info for local variables in function 'cylon'
+;------------------------------------------------------------
+;pos           Allocated to registers r7 
+;direction     Allocated to registers r6 
+;------------------------------------------------------------
+;	.\stcboot.c:92: void cylon(void) {
+;	-----------------------------------------
+;	 function cylon
+;	-----------------------------------------
+_cylon:
+;	.\stcboot.c:93: unsigned char pos = 1;
+	mov	r7,#0x01
+;	.\stcboot.c:94: unsigned char direction = 1; // 1 for forward, 0 for reverse
+	mov	r6,#0x01
+;	.\stcboot.c:96: while (1) {
+00111$:
+;	.\stcboot.c:97: if ((P3 & 0x20) == 0){
+	mov	a,_P3
+	jb	acc.5,00102$
+;	.\stcboot.c:98: Timer0_isr();
+;	.\stcboot.c:99: break;
+	ljmp	_Timer0_isr
+00102$:
+;	.\stcboot.c:101: P1 = ~pos;  // Invert output to turn LEDs on
+	mov	a,r7
+	cpl	a
+	mov	_P1,a
+;	.\stcboot.c:102: delay(5000);
 	mov	dptr,#0x1388
 	push	ar7
 	push	ar6
 	lcall	_delay
 	pop	ar6
 	pop	ar7
-;	.\stcboot.c:36: count++;
-	inc	r6
-	cjne	r6,#0x00,00119$
-	inc	r7
-00119$:
-;	.\stcboot.c:38: while (count < 256);
-	mov	a,#0x100 - 0x01
-	add	a,r7
-	jnc	00101$
-;	.\stcboot.c:39: return;
-;	.\stcboot.c:40: }
-	ret
-;------------------------------------------------------------
-;Allocation info for local variables in function 'cylon'
-;------------------------------------------------------------
-;pos           Allocated to registers r7 
-;------------------------------------------------------------
-;	.\stcboot.c:43: void cylon(void) {
-;	-----------------------------------------
-;	 function cylon
-;	-----------------------------------------
-_cylon:
-;	.\stcboot.c:44: unsigned char pos = 1;
-	mov	r7,#0x01
-;	.\stcboot.c:45: while (1) {
-00104$:
-;	.\stcboot.c:46: P1 = ~pos;  // Invert output to turn LEDs on
-	mov	a,r7
-	cpl	a
-	mov	_P1,a
-;	.\stcboot.c:47: delay(5000);
-	mov	dptr,#0x1388
-	push	ar7
-	lcall	_delay
-	pop	ar7
-;	.\stcboot.c:48: pos <<= 1;
+;	.\stcboot.c:104: if (direction) {
+	mov	a,r6
+	jz	00108$
+;	.\stcboot.c:105: pos <<= 1;
 	mov	a,r7
 	add	a,r7
-;	.\stcboot.c:49: if (pos == 0) pos = 1;  // Reset to start position
 	mov	r7,a
-	jnz	00104$
-	mov	r7,#0x01
-;	.\stcboot.c:51: }
-	sjmp	00104$
+;	.\stcboot.c:106: if (pos == 0x80) direction = 0;
+	cjne	r7,#0x80,00111$
+	mov	r6,#0x00
+	sjmp	00111$
+00108$:
+;	.\stcboot.c:108: pos >>= 1;
+	mov	a,r7
+	clr	c
+	rrc	a
+	mov	r7,a
+;	.\stcboot.c:109: if (pos == 0x01) direction = 1;  // Reverse at the beginning
+	cjne	r7,#0x01,00111$
+	mov	r6,#0x01
+;	.\stcboot.c:113: }
+	sjmp	00111$
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'dual_cylon'
 ;------------------------------------------------------------
 ;pos1          Allocated to registers r7 
 ;pos2          Allocated to registers r6 
 ;------------------------------------------------------------
-;	.\stcboot.c:54: void dual_cylon(void) {
+;	.\stcboot.c:117: void dual_cylon(void) {
 ;	-----------------------------------------
 ;	 function dual_cylon
 ;	-----------------------------------------
 _dual_cylon:
-;	.\stcboot.c:55: unsigned char pos1 = 1, pos2 = 0x80;
+;	.\stcboot.c:118: unsigned char pos1 = 1, pos2 = 0x80;
 	mov	r7,#0x01
 	mov	r6,#0x80
-;	.\stcboot.c:56: while (1) {
-00104$:
-;	.\stcboot.c:57: P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
+;	.\stcboot.c:119: while (1) {
+00106$:
+;	.\stcboot.c:120: if ((P3 & 0x20) == 0){
+	mov	a,_P3
+	jb	acc.5,00102$
+;	.\stcboot.c:121: P1=0xFF;
+	mov	_P1,#0xff
+;	.\stcboot.c:122: Timer0_isr();
+;	.\stcboot.c:123: break;
+	ljmp	_Timer0_isr
+00102$:
+;	.\stcboot.c:125: P1 = ~(pos1 | pos2);  // Invert output for correct LED logic
 	mov	a,r6
 	orl	a,r7
 	cpl	a
 	mov	_P1,a
-;	.\stcboot.c:58: delay(5000);
+;	.\stcboot.c:126: delay(5000);
 	mov	dptr,#0x1388
 	push	ar7
 	push	ar6
 	lcall	_delay
 	pop	ar6
 	pop	ar7
-;	.\stcboot.c:59: pos1 <<= 1;
+;	.\stcboot.c:127: pos1 <<= 1;
 	mov	a,r7
 	add	a,r7
 	mov	r7,a
-;	.\stcboot.c:60: pos2 >>= 1;
+;	.\stcboot.c:128: pos2 >>= 1;
 	mov	a,r6
 	clr	c
 	rrc	a
 	mov	r6,a
-;	.\stcboot.c:61: if (pos1 == 0x80) {  // Reset condition
-	cjne	r7,#0x80,00104$
-;	.\stcboot.c:62: pos1 = 1;
+;	.\stcboot.c:129: if (pos1 == 0x80) {  // Reset condition
+	cjne	r7,#0x80,00106$
+;	.\stcboot.c:130: pos1 = 1;
 	mov	r7,#0x01
-;	.\stcboot.c:63: pos2 = 0x80;
+;	.\stcboot.c:131: pos2 = 0x80;
 	mov	r6,#0x80
-;	.\stcboot.c:66: }
-	sjmp	00104$
+;	.\stcboot.c:134: }
+	sjmp	00106$
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'display_number'
 ;------------------------------------------------------------
@@ -558,15 +776,15 @@ _dual_cylon:
 ;hundreds      Allocated to registers r2 
 ;thousands     Allocated to registers r6 
 ;------------------------------------------------------------
-;	.\stcboot.c:69: void display_number(void) {
+;	.\stcboot.c:137: void display_number(void) {
 ;	-----------------------------------------
 ;	 function display_number
 ;	-----------------------------------------
 _display_number:
-;	.\stcboot.c:70: unsigned int temp = number;
+;	.\stcboot.c:138: unsigned int temp = number;
 	mov	r6,_number
 	mov	r7,(_number + 1)
-;	.\stcboot.c:72: unsigned char ones = temp % 10;
+;	.\stcboot.c:140: unsigned char ones = temp % 10;
 	mov	__moduint_PARM_2,#0x0a
 	mov	(__moduint_PARM_2 + 1),#0x00
 	mov	dpl, r6
@@ -577,10 +795,10 @@ _display_number:
 	mov	r4, dpl
 	pop	ar6
 	pop	ar7
-;	.\stcboot.c:73: temp /= 10;
+;	.\stcboot.c:141: temp /= 10;
 	mov	__divuint_PARM_2,#0x0a
 	mov	(__divuint_PARM_2 + 1),#0x00
-;	.\stcboot.c:74: unsigned char tens = temp % 10;
+;	.\stcboot.c:142: unsigned char tens = temp % 10;
 	mov	dpl, r6
 	mov	dph, r7
 	push	ar4
@@ -600,10 +818,10 @@ _display_number:
 	pop	ar4
 	pop	ar6
 	pop	ar7
-;	.\stcboot.c:75: temp /= 10;
+;	.\stcboot.c:143: temp /= 10;
 	mov	__divuint_PARM_2,#0x0a
 	mov	(__divuint_PARM_2 + 1),#0x00
-;	.\stcboot.c:76: unsigned char hundreds = temp % 10;
+;	.\stcboot.c:144: unsigned char hundreds = temp % 10;
 	mov	dpl, r6
 	mov	dph, r7
 	push	ar4
@@ -627,10 +845,10 @@ _display_number:
 	pop	ar4
 	pop	ar6
 	pop	ar7
-;	.\stcboot.c:77: temp /= 10;
+;	.\stcboot.c:145: temp /= 10;
 	mov	__divuint_PARM_2,#0x0a
 	mov	(__divuint_PARM_2 + 1),#0x00
-;	.\stcboot.c:78: unsigned char thousands = temp % 10;
+;	.\stcboot.c:146: unsigned char thousands = temp % 10;
 	mov	dpl, r6
 	mov	dph, r7
 	push	ar4
@@ -641,136 +859,132 @@ _display_number:
 	mov	b,#0x0a
 	mov	a,r6
 	div	ab
-;	.\stcboot.c:80: P0 = seg_table[thousands];
+;	.\stcboot.c:148: P0 = seg_table[thousands];	P2_0 = 0;	delay(500);	P2_0 = 1;
 	mov	a,b
 	add	a, #_seg_table
 	mov	r1,a
 	mov	_P0,@r1
-;	.\stcboot.c:81: P2_0 = 0;
 ;	assignBit
 	clr	_P2_0
-;	.\stcboot.c:82: delay(500);
 	mov	dptr,#0x01f4
 	lcall	_delay
 	pop	ar2
-;	.\stcboot.c:83: P2_0 = 1;
 ;	assignBit
 	setb	_P2_0
-;	.\stcboot.c:85: P0 = seg_table[hundreds];
+;	.\stcboot.c:149: P0 = seg_table[hundreds];	P2_1 = 0;	delay(500);	P2_1 = 1;
 	mov	a,r2
 	add	a, #_seg_table
 	mov	r1,a
 	mov	_P0,@r1
-;	.\stcboot.c:86: P2_1 = 0;
 ;	assignBit
 	clr	_P2_1
-;	.\stcboot.c:87: delay(500);
 	mov	dptr,#0x01f4
 	lcall	_delay
 	pop	ar3
-;	.\stcboot.c:88: P2_1 = 1;
 ;	assignBit
 	setb	_P2_1
-;	.\stcboot.c:90: P0 = seg_table[tens];
+;	.\stcboot.c:150: P0 = seg_table[tens];		P2_2 = 0;	delay(500);	P2_2 = 1;
 	mov	a,r3
 	add	a, #_seg_table
 	mov	r1,a
 	mov	_P0,@r1
-;	.\stcboot.c:91: P2_2 = 0;
 ;	assignBit
 	clr	_P2_2
-;	.\stcboot.c:92: delay(500);
 	mov	dptr,#0x01f4
 	lcall	_delay
 	pop	ar4
-;	.\stcboot.c:93: P2_2 = 1;
 ;	assignBit
 	setb	_P2_2
-;	.\stcboot.c:95: P0 = seg_table[ones];
+;	.\stcboot.c:151: P0 = seg_table[ones];		P2_3 = 0;	delay(500);	P2_3 = 1;
 	mov	a,r4
 	add	a, #_seg_table
 	mov	r1,a
 	mov	_P0,@r1
-;	.\stcboot.c:96: P2_3 = 0;
 ;	assignBit
 	clr	_P2_3
-;	.\stcboot.c:97: delay(500);
 	mov	dptr,#0x01f4
 	lcall	_delay
-;	.\stcboot.c:98: P2_3 = 1;
 ;	assignBit
 	setb	_P2_3
-;	.\stcboot.c:99: }
+;	.\stcboot.c:152: }
 	ret
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'number_clicker'
 ;------------------------------------------------------------
-;	.\stcboot.c:103: void number_clicker(void) {
+;	.\stcboot.c:155: void number_clicker(void) {
 ;	-----------------------------------------
 ;	 function number_clicker
 ;	-----------------------------------------
 _number_clicker:
-;	.\stcboot.c:105: if ((P3 & 0x08) == 0) { // Button Pressed
+;	.\stcboot.c:156: while (1) {
+00113$:
+;	.\stcboot.c:157: if ((P3 & 0x20) == 0){
 	mov	a,_P3
-	jb	acc.3,00104$
-;	.\stcboot.c:106: delay(5000);
+	jb	acc.5,00102$
+;	.\stcboot.c:158: Timer0_isr();
+;	.\stcboot.c:159: break;
+	ljmp	_Timer0_isr
+00102$:
+;	.\stcboot.c:161: display_number();
+	lcall	_display_number
+;	.\stcboot.c:162: if ((P3 & 0x08) == 0) { // Button Pressed
+	mov	a,_P3
+	jb	acc.3,00106$
+;	.\stcboot.c:163: delay(5000);
 	mov	dptr,#0x1388
 	lcall	_delay
-;	.\stcboot.c:107: number++;
+;	.\stcboot.c:164: number++;
 	inc	_number
 	clr	a
-	cjne	a,_number,00137$
+	cjne	a,_number,00155$
 	inc	(_number + 1)
-00137$:
-;	.\stcboot.c:108: if (number > 9999) number = 0; // Roll over to 0
+00155$:
+;	.\stcboot.c:165: if (number > 9999) number = 0; // Roll over to 0
 	clr	c
 	mov	a,#0x0f
 	subb	a,_number
 	mov	a,#0x27
 	subb	a,(_number + 1)
-	jnc	00104$
+	jnc	00106$
 	clr	a
 	mov	_number,a
 	mov	(_number + 1),a
-00104$:
-;	.\stcboot.c:114: if ((P3 & 0x12) == 0) { // Button Pressed
+00106$:
+;	.\stcboot.c:171: if ((P3 & 0x04) == 0) { // Button Pressed
 	mov	a,_P3
-	anl	a,#0x12
-	jnz	00109$
-;	.\stcboot.c:115: delay(5000);
+	jb	acc.2,00113$
+;	.\stcboot.c:172: delay(5000);
 	mov	dptr,#0x1388
 	lcall	_delay
-;	.\stcboot.c:116: if (number == 0) number = 9999; // Roll over to 9999
+;	.\stcboot.c:173: if (number == 0) number = 9999; // Roll over to 9999
 	mov	a,_number
 	orl	a,(_number + 1)
-	jnz	00106$
+	jnz	00108$
 	mov	_number,#0x0f
 	mov	(_number + 1),#0x27
-	sjmp	00109$
-00106$:
-;	.\stcboot.c:117: else number--;
+	sjmp	00113$
+00108$:
+;	.\stcboot.c:174: else number--;
 	dec	_number
 	mov	a,#0xff
-	cjne	a,_number,00142$
+	cjne	a,_number,00159$
 	dec	(_number + 1)
-00142$:
-00109$:
-;	.\stcboot.c:121: display_number();
-;	.\stcboot.c:123: }
-	ljmp	_display_number
+00159$:
+;	.\stcboot.c:177: }
+	sjmp	00113$
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'main'
 ;------------------------------------------------------------
-;	.\stcboot.c:125: void main(void) {
+;	.\stcboot.c:179: void main(void) {
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	.\stcboot.c:126: while (1) {
+;	.\stcboot.c:180: Init_Timer0();
+	lcall	_Init_Timer0
+;	.\stcboot.c:181: while (1) {
 00102$:
-;	.\stcboot.c:129: dual_cylon();
-	lcall	_dual_cylon
-;	.\stcboot.c:132: }
+;	.\stcboot.c:184: }
 	sjmp	00102$
 	.area CSEG    (CODE)
 	.area CONST   (CODE)
