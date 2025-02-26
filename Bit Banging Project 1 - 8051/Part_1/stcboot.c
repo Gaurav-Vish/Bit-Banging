@@ -1,5 +1,4 @@
 #include <8051.h>
-// #include <reg51.h>
 
 // Function Prototypes
 void delay(unsigned int time);
@@ -17,6 +16,8 @@ unsigned long startmillis;
 unsigned long currentmillis;
 unsigned int buttonIndex = 0;
 const unsigned long period = 1000;
+unsigned int timercounter = 0;
+unsigned int timercounttotal = 0;
 
 unsigned char seg_table[] = {
     0xC0, 0xF9, 0xA4, 0xB0, 0x99, 0x92, 0x82, 0xF8, 0x80, 0x90
@@ -37,9 +38,8 @@ void Timer0_isr(void) __interrupt(1) __using(1)
 {
 	TH0 = 0xFC;		// overflow at 65536
 	TL0 = 0x18;
-	// P1=~P1;
+	timercounter++;
 }
-
 
 // Delay function
 void delay(unsigned int time) {
@@ -49,16 +49,22 @@ void delay(unsigned int time) {
 // Binary count from 0-255
 void binary_count(void) {
     unsigned int count = 0;
-    do{
+    // if(timercounter/20 == 0){
+    //     timercounttotal=1;
+    // }
+    while(count<255){
         P1 = ~count;  // Output inverted count to LEDs
-        delay(2000);
-        count++;
+        // if(timercounttotal==1){
+            // delay(5000);
+            // timercounttotal=0;
+            delay(5000);
+            count++;
+        // }
 		if ((P3 & 0x20) == 0){
 			delay(5000);
 			break;
 		}
     }
-    while (count < 256);
 }
 
 // Cylon effect
@@ -134,22 +140,26 @@ void number_clicker(void) {
 		display_number();
         if ((P3 & 0x08) == 0) { // Button Pressed
             delay(5000);
-            number++;
-            if (number > 9999) number = 0; // Roll over to 0
-//                display_number();
-//            }
+            if ((P3 & 0x08) == 0) { // Button Pressed
+                number++;
+                if (number > 9999) number = 0; // Roll over to 0
+    //                display_number();
+            }
         }
 
         // Decrement Number (S4)
         if ((P3 & 0x04) == 0) { // Button Pressed
             delay(5000);
-            if (number == 0) number = 9999; // Roll over to 9999
-            else number--;
+            if ((P3 & 0x04) == 0) { // Button Pressed
+                if (number == 0) number = 9999; // Roll over to 9999
+                else number--;
+            }
         }
     }
 }
 
 void main(void) {
+    Init_Timer0();
     while (1) {
 		if ((P3 & 0x20) == 0) {
 			buttonIndex++;
